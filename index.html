@@ -168,6 +168,20 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .action-bar { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ── SHARE / TEACHER LINK SCREEN ── */
+#share-screen { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9000; align-items:center; justify-content:center; padding:20px; }
+#share-screen.open { display:flex; }
+.share-card { background:white; border-radius:20px; padding:24px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; }
+.share-title { font-size:17px; font-weight:600; color:var(--blue); margin-bottom:4px; }
+.share-sub { font-size:12px; color:var(--muted); margin-bottom:18px; }
+.share-link-box { background:var(--gray); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; font-size:11px; word-break:break-all; color:var(--text); margin-bottom:10px; line-height:1.5; }
+.share-btn-row { display:flex; gap:8px; margin-bottom:10px; }
+.btn-copy { flex:1; padding:10px; background:var(--blue); color:white; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+.btn-wa { flex:1; padding:10px; background:#25D366; color:white; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+.btn-close-share { width:100%; padding:10px; background:white; color:var(--muted); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; cursor:pointer; font-family:inherit; margin-top:4px; }
+.teacher-badge { background:#fff3cd; border:1.5px solid #ffc107; border-radius:var(--radius-sm); padding:10px 13px; margin-bottom:14px; font-size:12px; color:#856404; line-height:1.6; }
+.teacher-badge strong { display:block; font-size:13px; margin-bottom:2px; }
 </style>
 </head>
 <body>
@@ -180,9 +194,15 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
     <div class="setup-logo-row">
       <div class="setup-logo-circle" id="setup-logo-preview">🏫</div>
       <div>
-        <div class="setup-title">School Setup</div>
-        <div class="setup-subtitle">Ek baar fill karo, hamesha ke liye save</div>
+        <div class="setup-title" id="setup-title-text">School Setup</div>
+        <div class="setup-subtitle" id="setup-subtitle-text">Ek baar fill karo, hamesha ke liye save</div>
       </div>
+    </div>
+
+    <!-- Teacher mode badge (shown only when link token present) -->
+    <div class="teacher-badge" id="teacher-mode-badge" style="display:none">
+      <strong>👨‍🏫 Teacher Mode</strong>
+      School pehle se connected hai. Sirf apna naam likhein aur students add karein.
     </div>
 
     <!-- Google already connected — show badge -->
@@ -206,12 +226,12 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
       <input type="text" id="s-name" placeholder="Jaise: Radiant Public School">
     </div>
     <div class="field-group">
-      <label>Pata (Address)</label>
+      <label>Address</label>
       <textarea id="s-addr" placeholder="Village, Block, District, State"></textarea>
     </div>
     <div class="field-group">
       <label>Session (Saal)</label>
-      <input type="text" id="s-session" placeholder="2025-26" value="2025-26">
+      <input type="text" id="s-session" placeholder="2026-27" value="2026-27">
     </div>
     <div class="field-group">
       <label>Principal Ka Naam</label>
@@ -222,7 +242,7 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
       <input type="tel" id="s-phone" placeholder="9XXXXXXXXX">
     </div>
 
-    <button class="btn-setup" onclick="saveSetup()">✓ Shuru Karein →</button>
+    <button class="btn-setup" onclick="saveSetup()">✓ Start Now →</button>
   </div>
 </div>
 
@@ -272,7 +292,7 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
           <label>Class *</label>
           <select id="f-class">
             <option value="">-- Class --</option>
-            <option>Nursery</option><option>KG</option>
+            <option>Nursery</option><option>LKG</option><option>UKG</option>
             <option>Class 1</option><option>Class 2</option><option>Class 3</option>
             <option>Class 4</option><option>Class 5</option><option>Class 6</option>
             <option>Class 7</option><option>Class 8</option><option>Class 9</option>
@@ -289,7 +309,7 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
         <input type="number" id="f-roll" placeholder="Roll No.">
       </div>
       <div class="form-group">
-        <label>Ghar Ka Pata</label>
+        <label>Address</label>
         <input type="text" id="f-addr" placeholder="Village, Block, District">
       </div>
       <div class="form-group">
@@ -339,6 +359,12 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
   <!-- TAB: EXPORT -->
   <div id="tab-export" style="display:none">
     <div class="card">
+      <div class="section-label">Teacher Link Share Karein</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Class teacher ko ye link bhejein — woh same sheet mein apni class ka data add kar sakenge.</p>
+      <button class="btn-success" onclick="openShareScreen()" style="width:100%; margin-bottom:0;">📤 Teacher Link Generate Karein</button>
+    </div>
+
+    <div class="card">
       <div class="section-label">Google Sheets Sync</div>
       <div class="sync-info-box">
         <p>
@@ -375,6 +401,23 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
   </div>
 </div>
 
+
+<!-- ════════════════════════════════
+     SHARE / TEACHER LINK MODAL
+════════════════════════════════ -->
+<div id="share-screen">
+  <div class="share-card">
+    <div class="share-title">📤 Teacher Link Share Karein</div>
+    <div class="share-sub">Ye link class teacher ko bhejein — woh seedha student form kholega</div>
+    <div class="share-link-box" id="share-link-text">Link generate ho raha hai...</div>
+    <div class="share-btn-row">
+      <button class="btn-copy" onclick="copyShareLink()">📋 Copy Link</button>
+      <button class="btn-wa" onclick="shareOnWhatsApp()">💬 WhatsApp</button>
+    </div>
+    <button class="btn-close-share" onclick="closeShareScreen()">✕ Band Karein</button>
+  </div>
+</div>
+
 <!-- PRINT AREA (hidden) -->
 <div id="print-area" style="display:none"></div>
 
@@ -382,16 +425,53 @@ body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 10
 // ══════════════════════════════════════
 // EMBEDDED CONFIG — Teacher ko kuch nahi karna
 // ══════════════════════════════════════
-const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyo2aNuQoWIcY5uhE9ox483H-czDk__pB5IplgeKK3BhgbGC5TRf6VK8Mb81ckLgBgqzQ/exec';
+const GAS_URL   = 'https://script.google.com/macros/s/AKfycbwgqMq0R06RDqBfmf4J3Ja3Fye9aFSoERTlGxviTgrsH6Q_12c4GNvaosaQ0X-AxRnjPw/exec';
 const SHEET_ID  = '1RgUdXgC6uRx4EsbWWoqxnqxbhYNSo1nZZvqFWVpusd8';
+
+// ══════════════════════════════════════
+// URL TOKEN — Teacher Link Support
+// ══════════════════════════════════════
+// Token = base64 encoded school info in URL param ?t=XXXXX
+// Teacher ke browser mein koi localStorage nahi hota
+// Token se school info decode karke directly app open hoti hai
+
+function getUrlToken() {
+  return new URLSearchParams(window.location.search).get('t');
+}
+
+function decodeToken(token) {
+  try {
+    return JSON.parse(atob(decodeURIComponent(token)));
+  } catch(e) { return null; }
+}
+
+function encodeToken(info) {
+  // Logo hata ke token banao (URL chhoti rakho)
+  const slim = {
+    name:      info.name,
+    address:   info.address,
+    session:   info.session,
+    principal: info.principal,
+    phone:     info.phone,
+    gasUrl:    info.gasUrl  || GAS_URL,
+    sheetId:   info.sheetId || SHEET_ID
+    // logo intentionally skip — URL bohot badi ho jaati
+  };
+  return encodeURIComponent(btoa(JSON.stringify(slim)));
+}
 
 // ══════════════════════════════════════
 // DATA
 // ══════════════════════════════════════
-let students   = JSON.parse(localStorage.getItem('rps_students') || '[]');
-let schoolInfo = JSON.parse(localStorage.getItem('rps_school')   || 'null');
+// Teacher ke liye alag localStorage key (token se) taaki data mix na ho
+const urlToken = getUrlToken();
+const STORE_KEY = urlToken ? 'rps_students_t_' + urlToken.substring(0,12) : 'rps_students';
+
+let students   = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+let schoolInfo = JSON.parse(localStorage.getItem('rps_school') || 'null');
 let currentPhoto = null;
 let schoolLogo   = null;
+let isTeacherMode = false;
 
 // ══════════════════════════════════════
 // SETUP
@@ -456,9 +536,15 @@ function initApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('main-app').style.display     = 'block';
   document.getElementById('app-school-name').textContent = schoolInfo.name;
-  document.getElementById('app-school-addr').textContent = schoolInfo.address || 'ID Card System';
+  document.getElementById('app-school-addr').textContent = isTeacherMode
+    ? '👨‍🏫 Teacher Mode — ' + (schoolInfo.session || '')
+    : (schoolInfo.address || 'ID Card System');
   if (schoolInfo.logo) {
     document.getElementById('app-header-logo').innerHTML = `<img src="${schoolInfo.logo}" style="width:46px;height:46px;object-fit:cover;border-radius:50%;">`;
+  }
+  // Teacher mode mein Setup button hide karo
+  if (isTeacherMode) {
+    document.querySelector('.btn-settings').style.display = 'none';
   }
   populatePrintClassFilter();
   checkPendingSync();
@@ -466,6 +552,28 @@ function initApp() {
 
 // Auto-load agar setup pehle se hua hai
 window.onload = () => {
+  const token = getUrlToken();
+
+  if (token) {
+    // ── TEACHER MODE ── URL mein token hai
+    const decoded = decodeToken(token);
+    if (decoded && decoded.name) {
+      isTeacherMode = true;
+      schoolInfo = {
+        ...decoded,
+        gasUrl:  decoded.gasUrl  || GAS_URL,
+        sheetId: decoded.sheetId || SHEET_ID
+      };
+      // Teacher mode UI tweaks
+      document.getElementById('teacher-mode-badge').style.display = 'block';
+      document.getElementById('setup-title-text').textContent = '👨‍🏫 Teacher Mode';
+      document.getElementById('setup-subtitle-text').textContent = decoded.name + ' — ' + (decoded.session || '');
+      // Setup fields hide karo, seedha app kholein
+      initApp();
+      return;
+    }
+  }
+
   if (schoolInfo) {
     // Ensure embedded URLs are always latest
     schoolInfo.gasUrl  = GAS_URL;
@@ -570,7 +678,7 @@ function resetForm() {
 }
 
 function saveStudents() {
-  localStorage.setItem('rps_students', JSON.stringify(students));
+  localStorage.setItem(STORE_KEY, JSON.stringify(students));
 }
 
 // ══════════════════════════════════════
@@ -770,13 +878,13 @@ function compressPhotoForDrive(base64) {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const maxSize = 200;
+      const maxSize = 400;
       let w = img.width, h = img.height;
       if (w > h) { if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; } }
       else        { if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; } }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', 0.6));
+      resolve(canvas.toDataURL('image/jpeg', 0.82));
     };
     img.onerror = () => resolve(base64); // fallback
     img.src = base64;
@@ -963,6 +1071,54 @@ function showToast(msg, color) {
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2800);
+}
+
+
+// ══════════════════════════════════════
+// SHARE — Teacher Link Generator
+// ══════════════════════════════════════
+function openShareScreen() {
+  if (!schoolInfo) { alert('Pehle school setup karein!'); return; }
+  const token   = encodeToken(schoolInfo);
+  const baseUrl = window.location.href.split('?')[0];
+  const link    = baseUrl + '?t=' + token;
+
+  document.getElementById('share-link-text').textContent = link;
+  document.getElementById('share-screen').classList.add('open');
+}
+
+function closeShareScreen() {
+  document.getElementById('share-screen').classList.remove('open');
+}
+
+function copyShareLink() {
+  const link = document.getElementById('share-link-text').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => {
+      showToast('✓ Link copy ho gaya!');
+      closeShareScreen();
+    });
+  } else {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = link;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('✓ Link copy ho gaya!');
+    closeShareScreen();
+  }
+}
+
+function shareOnWhatsApp() {
+  const link  = document.getElementById('share-link-text').textContent;
+  const msg   = encodeURIComponent(
+    '📋 *School ID Card System*\n' +
+    schoolInfo.name + ' — ' + (schoolInfo.session || '') + '\n\n' +
+    'Is link se apni class ke students ka data bharo:\n' + link
+  );
+  window.open('https://wa.me/?text=' + msg, '_blank');
 }
 
 // Online hone par auto-sync
