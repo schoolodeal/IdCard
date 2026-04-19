@@ -2,1133 +2,1211 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>School ID Card System</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Radiant Public School — ID System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <style>
-:root {
-  --blue: #1a5276;
-  --blue-light: #2e86c1;
-  --blue-pale: #d6eaf8;
-  --green: #1e8449;
-  --green-pale: #d5f5e3;
-  --red: #c0392b;
-  --red-pale: #fdecea;
-  --amber: #d68910;
-  --amber-pale: #fef9e7;
-  --gray: #f4f6f8;
-  --border: #dce3ea;
-  --text: #1a202c;
-  --muted: #718096;
-  --white: #ffffff;
-  --radius: 12px;
-  --radius-sm: 8px;
+:root{
+  --blue:#1a5276;--blue-mid:#2471a3;--blue-light:#d6eaf8;
+  --green:#1e8449;--green-pale:#d5f5e3;
+  --red:#c0392b;--red-pale:#fdecea;
+  --amber:#b7770d;--amber-pale:#fef9e7;
+  --gray:#f4f6f8;--border:#dce3ea;--text:#1a202c;--muted:#718096;
+  --r:12px;--rsm:8px;--shadow:0 2px 12px rgba(0,0,0,.08);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Noto Sans', sans-serif; background: #eaf0f6; min-height: 100vh; color: var(--text); }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#eaf0f6;color:var(--text);font-size:15px}
+input,select,textarea,button{font-family:inherit;font-size:14px}
 
-/* ── SETUP SCREEN ── */
-#setup-screen { display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(160deg, #1a5276 0%, #2e86c1 100%); }
-.setup-card { background: white; border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
-.setup-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
-.setup-logo-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; text-align: center; line-height: 1.2; flex-shrink: 0; overflow: hidden; }
-.setup-logo-circle img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.setup-title { font-size: 20px; font-weight: 600; color: var(--blue); }
-.setup-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
-.setup-section { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; margin-top: 20px; }
-.setup-section:first-of-type { margin-top: 0; }
-.field-group { margin-bottom: 14px; }
-.field-group label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 5px; font-weight: 500; }
-.field-group input, .field-group textarea {
-  width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 14px; font-family: inherit; color: var(--text); background: white;
-  transition: border-color 0.15s;
-}
-.field-group input:focus, .field-group textarea:focus { outline: none; border-color: var(--blue-light); }
-.field-group textarea { resize: none; height: 70px; }
-.logo-upload-area { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; cursor: pointer; background: var(--gray); transition: border-color 0.15s; }
-.logo-upload-area:hover { border-color: var(--blue-light); }
-.logo-upload-area.has-logo { border-style: solid; border-color: var(--blue); }
-.logo-preview { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; margin: 0 auto 6px; display: block; }
-.logo-text { font-size: 12px; color: var(--muted); }
+/* SCREENS */
+.screen{display:none}
 
-/* Connected badge in setup */
-.connected-badge { background: var(--green-pale); border: 1.5px solid #82e0aa; border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-.connected-badge .badge-icon { font-size: 22px; }
-.connected-badge .badge-text { font-size: 12px; color: #1e6f3a; line-height: 1.5; }
-.connected-badge .badge-text strong { display: block; font-size: 13px; }
+/* SETUP */
+#setup{min-height:100vh;background:linear-gradient(150deg,#1a5276,#2e86c1);display:flex;align-items:center;justify-content:center;padding:20px}
+.setup-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.setup-brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.setup-logo{width:54px;height:54px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:white;flex-shrink:0;overflow:hidden;cursor:pointer}
+.setup-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.setup-brand h1{font-size:19px;font-weight:700;color:var(--blue)}
+.setup-brand p{font-size:12px;color:var(--muted);margin-top:2px}
+.setup-note{background:var(--blue-light);border:1px solid #85c1e9;border-radius:var(--rsm);padding:12px;font-size:13px;color:var(--blue);margin-bottom:16px;line-height:1.5}
+.fld{margin-bottom:13px}
+.fld label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px}
+.fld label em{color:var(--red);font-style:normal}
+.fld input,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;color:var(--text);background:white}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--blue-mid)}
+.logo-drop{border:2px dashed var(--border);border-radius:var(--rsm);padding:14px;text-align:center;cursor:pointer;background:var(--gray)}
+.logo-drop p{font-size:12px;color:var(--muted)}
 
-.btn-setup { width: 100%; padding: 14px; background: var(--blue); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; transition: background 0.15s; }
-.btn-setup:hover { background: var(--blue-light); }
+/* MAIN APP */
+#app{min-height:100vh}
+.wrap{max-width:480px;margin:0 auto;padding:12px 12px 90px}
 
-/* ── MAIN APP ── */
-#main-app { display: none; max-width: 440px; margin: 0 auto; padding: 12px 12px 80px; }
-.app-header { background: var(--blue); color: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
-.header-logo { width: 46px; height: 46px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--blue); text-align: center; line-height: 1.2; flex-shrink: 0; overflow: hidden; }
-.header-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.header-info h1 { font-size: 15px; font-weight: 600; }
-.header-info p { font-size: 11px; opacity: 0.75; margin-top: 1px; }
-.header-right { margin-left: auto; }
-.btn-settings { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
+/* HEADER */
+.hdr{background:var(--blue);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.hdr-logo{width:46px;height:46px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:var(--blue);flex-shrink:0;overflow:hidden}
+.hdr-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.hdr h1{font-size:15px;font-weight:700;color:white;flex:1}
+.hdr p{font-size:11px;color:rgba(255,255,255,.72);margin-top:1px}
+.hdr-btn{background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;padding:7px 10px;font-size:12px;cursor:pointer;margin-left:auto;flex-shrink:0}
 
-.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tab { flex: 1; padding: 9px 4px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 12px; font-weight: 500; cursor: pointer; text-align: center; background: white; color: var(--muted); transition: all 0.15s; }
-.tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+/* TABS */
+.tabs{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:white;color:var(--muted);white-space:nowrap}
+.tab.active{background:var(--blue);color:white;border-color:var(--blue)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
 
-.card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-.section-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+/* CARDS */
+.card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card-hd{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
 
-/* Form */
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-group { margin-bottom: 12px; }
-.form-group label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
-.form-group input, .form-group select {
-  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 14px; font-family: inherit; color: var(--text); background: white;
-}
-.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--blue-light); }
+/* ALERTS */
+.alert{border-radius:var(--rsm);padding:10px 13px;font-size:13px;line-height:1.5;margin-bottom:12px}
+.alert-info{background:var(--blue-light);border:1px solid #85c1e9;color:var(--blue)}
+.alert-success{background:var(--green-pale);border:1px solid #82e0aa;color:var(--green)}
+.alert-warning{background:var(--amber-pale);border:1px solid #f0c040;color:var(--amber)}
+.alert-error{background:var(--red-pale);border:1px solid #f1948a;color:var(--red)}
 
-.photo-area { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 20px 12px; text-align: center; cursor: pointer; background: var(--gray); transition: all 0.15s; }
-.photo-area:hover { border-color: var(--blue-light); background: var(--blue-pale); }
-.photo-area.has-photo { border-style: solid; border-color: var(--blue); background: white; padding: 10px; }
-.photo-preview { width: 80px; height: 88px; border-radius: var(--radius-sm); object-fit: cover; margin: 0 auto 6px; display: block; }
-.photo-icon { font-size: 30px; margin-bottom: 8px; }
-.photo-hint { font-size: 12px; color: var(--muted); }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border-radius:var(--rsm);font-size:14px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-blue{background:var(--blue);color:white}
+.btn-green{background:var(--green);color:white}
+.btn-ghost{background:white;color:var(--text);border:1.5px solid var(--border)}
+.btn-danger{background:var(--red-pale);color:var(--red);border:1px solid #f1948a}
+.btn-sm{padding:7px 12px;font-size:12px;width:auto}
+.row-btns{display:flex;gap:8px;margin-top:4px}
 
-.btn-primary { width: 100%; padding: 13px; background: var(--blue); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
-.btn-primary:hover { background: var(--blue-light); }
-.btn-primary:disabled { background: #aaa; cursor: not-allowed; }
-.btn-secondary { padding: 9px 16px; background: white; color: var(--text); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
-.btn-danger { padding: 6px 12px; background: var(--red-pale); color: var(--red); border: 1px solid #f1948a; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; }
-.btn-success { padding: 9px 16px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:white;border:1px solid var(--border);border-radius:var(--rsm);padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
+.stat-n{font-size:22px;font-weight:700;color:var(--blue)}
+.stat-l{font-size:11px;color:var(--muted)}
 
-.alert { border-radius: var(--radius-sm); padding: 10px 13px; font-size: 12px; margin-bottom: 12px; line-height: 1.5; }
-.alert-warning { background: var(--amber-pale); border: 1px solid #f0c040; color: #7d6608; }
-.alert-success { background: var(--green-pale); border: 1px solid #82e0aa; color: #1e6f3a; }
-.alert-info { background: var(--blue-pale); border: 1px solid #85c1e9; color: #1a5276; }
-.alert-error { background: var(--red-pale); border: 1px solid #f1948a; color: var(--red); }
+/* PHOTO ZONE */
+.photo-zone{border:2px dashed var(--border);border-radius:var(--rsm);padding:20px 12px;text-align:center;cursor:pointer;background:var(--gray)}
+.photo-zone.filled{border-style:solid;border-color:var(--blue);background:white;padding:10px}
+.pz-icon{font-size:30px;margin-bottom:8px}
+.pz-hint{font-size:12px;color:var(--muted);line-height:1.5}
+.pz-hint b{color:var(--blue-mid)}
+.pz-img{width:80px;height:100px;object-fit:cover;border-radius:var(--rsm);display:block;margin:0 auto 8px;border:1px solid var(--border)}
+.pz-btns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 
-/* Student list */
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.stat-box { background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; }
-.stat-num { font-size: 22px; font-weight: 600; color: var(--blue); }
-.stat-lbl { font-size: 11px; color: var(--muted); }
+/* FORM GRID */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.fgrid .full{grid-column:1/-1}
+.fg label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+.fg label em{color:var(--red);font-style:normal}
+.fg input,.fg select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:13px;color:var(--text);background:white}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--blue-mid)}
 
-.student-item { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 8px; }
-.s-avatar { width: 42px; height: 46px; border-radius: 8px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px; color: var(--blue); flex-shrink: 0; overflow: hidden; }
-.s-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.s-info { flex: 1; }
-.s-name { font-size: 14px; font-weight: 500; }
-.s-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.s-sync { font-size: 10px; padding: 2px 8px; border-radius: 20px; }
-.synced { background: var(--green-pale); color: var(--green); }
-.pending { background: var(--amber-pale); color: var(--amber); }
+/* STUDENT LIST */
+.s-item{display:flex;align-items:center;gap:10px;background:white;border:1px solid var(--border);border-radius:var(--rsm);padding:10px 12px;margin-bottom:8px;box-shadow:var(--shadow)}
+.s-av{width:44px;height:52px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:var(--blue);flex-shrink:0;overflow:hidden}
+.s-av img{width:100%;height:100%;object-fit:cover}
+.s-info{flex:1;min-width:0}
+.s-name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.s-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.b-synced{background:var(--green-pale);color:var(--green)}
+.b-pending{background:var(--amber-pale);color:var(--amber)}
 
-.empty-state { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 13px; }
-.empty-icon { font-size: 36px; margin-bottom: 10px; }
+/* ID CARD */
+.id-card{width:100%;max-width:330px;margin:0 auto;border-radius:12px;overflow:hidden;border:1px solid #b0bec5;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+.id-strip{height:5px;background:linear-gradient(90deg,#f0c040,#e74c3c,#1a5276)}
+.id-hdr{background:var(--blue);color:white;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.id-hdr-logo{width:42px;height:42px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--blue);flex-shrink:0;overflow:hidden}
+.id-hdr-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.id-school{font-size:13px;font-weight:700}
+.id-addr{font-size:9px;opacity:.8;margin-top:2px;line-height:1.4}
+.id-body{background:white;padding:14px;display:flex;gap:12px}
+.id-photo{width:78px;height:90px;border-radius:8px;background:#eee;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;border:1px solid var(--border);text-align:center}
+.id-photo img{width:100%;height:100%;object-fit:cover}
+.id-sname{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.id-row{display:flex;font-size:10px;margin-bottom:4px}
+.id-k{color:var(--muted);min-width:64px;font-weight:600}
+.id-v{color:var(--text);font-weight:500;flex:1}
+.id-ftr{background:var(--blue);color:white;padding:7px 14px;display:flex;justify-content:space-between;font-size:9px}
 
-/* ID Card Preview */
-.id-card-wrap { background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--border); }
-.id-card {
-  width: 100%; max-width: 340px; margin: 0 auto;
-  border-radius: 12px; overflow: hidden;
-  border: 1px solid #c0cdd8; box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-.id-card-header { background: var(--blue); color: white; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
-.id-card-logo { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--blue); text-align: center; flex-shrink: 0; overflow: hidden; }
-.id-card-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.id-school-name { font-size: 13px; font-weight: 600; }
-.id-school-addr { font-size: 9px; opacity: 0.8; margin-top: 1px; line-height: 1.4; }
-.id-card-body { background: white; padding: 14px; display: flex; gap: 12px; }
-.id-photo-box { width: 76px; height: 86px; border-radius: 8px; background: #eee; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; border: 1px solid #ddd; }
-.id-photo-box img { width: 100%; height: 100%; object-fit: cover; }
-.id-details { flex: 1; }
-.id-student-name { font-size: 14px; font-weight: 600; color: var(--blue); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-.id-row { display: flex; font-size: 11px; margin-bottom: 4px; }
-.id-key { color: var(--muted); min-width: 66px; font-weight: 500; }
-.id-val { color: var(--text); font-weight: 500; }
-.id-card-footer { background: var(--blue); color: white; padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; }
-.id-footer-text { font-size: 9px; opacity: 0.85; }
-.id-strip { height: 4px; background: linear-gradient(90deg, #f0c040, #e74c3c, #1a5276); }
+/* ADMIN TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:var(--rsm);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:580px}
+th{background:var(--blue);color:white;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#f8fafc}
+.t-photo{width:34px;height:40px;border-radius:5px;object-fit:cover;display:block}
+.t-av{width:34px;height:40px;border-radius:5px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);font-size:13px}
 
-/* Sync info box in export tab */
-.sync-info-box { background: var(--blue-pale); border: 1.5px solid #85c1e9; border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; }
-.sync-info-box p { font-size: 12px; color: #1a5276; line-height: 1.7; }
-.sync-info-box a { color: var(--blue); font-weight: 600; word-break: break-all; }
+/* PIN styles removed */
 
-/* Print styles */
-@media print {
-  body * { visibility: hidden; }
-  #print-area, #print-area * { visibility: visible; }
-  #print-area { position: fixed; top: 0; left: 0; width: 100%; }
-  .no-print { display: none !important; }
-}
+/* CROP MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-box{background:white;border-radius:16px;width:100%;max-width:440px;overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
+.modal-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-hdr h3{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+.modal-body{flex:1;overflow:auto;padding:16px}
+.crop-box{width:100%;max-height:52vh;overflow:hidden;border-radius:var(--rsm);background:#000}
+.crop-box img{max-width:100%;display:block}
+.modal-ftr{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
 
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* LOADING */
+#loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+#loading.on{display:flex}
+#loading p{font-size:14px;color:var(--blue);font-weight:600}
+.spin{display:inline-block;width:32px;height:32px;border:3px solid rgba(26,82,118,.15);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.action-bar { display: flex; gap: 8px; margin-top: 12px; }
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,.2);display:none;max-width:90vw;text-align:center}
 
-/* ── SHARE / TEACHER LINK SCREEN ── */
-#share-screen { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9000; align-items:center; justify-content:center; padding:20px; }
-#share-screen.open { display:flex; }
-.share-card { background:white; border-radius:20px; padding:24px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; }
-.share-title { font-size:17px; font-weight:600; color:var(--blue); margin-bottom:4px; }
-.share-sub { font-size:12px; color:var(--muted); margin-bottom:18px; }
-.share-link-box { background:var(--gray); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; font-size:11px; word-break:break-all; color:var(--text); margin-bottom:10px; line-height:1.5; }
-.share-btn-row { display:flex; gap:8px; margin-bottom:10px; }
-.btn-copy { flex:1; padding:10px; background:var(--blue); color:white; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
-.btn-wa { flex:1; padding:10px; background:#25D366; color:white; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
-.btn-close-share { width:100%; padding:10px; background:white; color:var(--muted); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; cursor:pointer; font-family:inherit; margin-top:4px; }
-.teacher-badge { background:#fff3cd; border:1.5px solid #ffc107; border-radius:var(--radius-sm); padding:10px 13px; margin-bottom:14px; font-size:12px; color:#856404; line-height:1.6; }
-.teacher-badge strong { display:block; font-size:13px; margin-bottom:2px; }
+/* SEARCH */
+.search-row{display:flex;gap:8px;margin-bottom:12px}
+.search-row input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:13px;color:var(--text)}
+.search-row input:focus{outline:none;border-color:var(--blue-mid)}
+
+.empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:13px}
+.empty-icon{font-size:40px;margin-bottom:10px}
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════
-     SETUP SCREEN (One-time)
-════════════════════════════════ -->
-<div id="setup-screen">
-  <div class="setup-card">
-    <div class="setup-logo-row">
-      <div class="setup-logo-circle" id="setup-logo-preview">🏫</div>
-      <div>
-        <div class="setup-title" id="setup-title-text">School Setup</div>
-        <div class="setup-subtitle" id="setup-subtitle-text">Ek baar fill karo, hamesha ke liye save</div>
-      </div>
-    </div>
+<!-- LOADING -->
+<div id="loading"><div class="spin"></div><p id="loading-msg">Please wait...</p></div>
 
-    <!-- Teacher mode badge (shown only when link token present) -->
-    <div class="teacher-badge" id="teacher-mode-badge" style="display:none">
-      <strong>👨‍🏫 Teacher Mode</strong>
-      School pehle se connected hai. Sirf apna naam likhein aur students add karein.
-    </div>
+<!-- TOAST -->
+<div id="toast"></div>
 
-    <!-- Google already connected — show badge -->
-    <div class="connected-badge">
-      <div class="badge-icon">✅</div>
-      <div class="badge-text">
-        <strong>Google Sheet &amp; Drive — Connected!</strong>
-        Data automatically sync hoga. Kuch aur karne ki zaroorat nahi.
-      </div>
+<!-- CROP MODAL -->
+<div class="modal" id="crop-modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3>Passport Size Crop (3:4)</h3>
+      <button class="modal-close" onclick="closeCrop()">✕</button>
     </div>
-
-    <div class="setup-section">School Logo</div>
-    <div class="logo-upload-area" id="logoUploadArea" onclick="document.getElementById('logoFileInput').click()">
-      <div class="logo-text">📷 Logo upload karo (optional)</div>
+    <div class="modal-body">
+      <div class="crop-box"><img id="crop-img" src=""></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center">Drag karke adjust karo</p>
     </div>
-    <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
-
-    <div class="setup-section">School Details</div>
-    <div class="field-group">
-      <label>School Ka Naam *</label>
-      <input type="text" id="s-name" placeholder="Jaise: Radiant Public School">
+    <div class="modal-ftr">
+      <button class="btn btn-ghost" style="flex:1;width:auto" onclick="closeCrop()">Cancel</button>
+      <button class="btn btn-blue" style="flex:1;width:auto" onclick="applyCrop()">✓ Crop &amp; Use</button>
     </div>
-    <div class="field-group">
-      <label>Address</label>
-      <textarea id="s-addr" placeholder="Village, Block, District, State"></textarea>
-    </div>
-    <div class="field-group">
-      <label>Session (Saal)</label>
-      <input type="text" id="s-session" placeholder="2026-27" value="2026-27">
-    </div>
-    <div class="field-group">
-      <label>Principal Ka Naam</label>
-      <input type="text" id="s-principal" placeholder="Mr./Ms. ...">
-    </div>
-    <div class="field-group">
-      <label>School Ka Phone Number</label>
-      <input type="tel" id="s-phone" placeholder="9XXXXXXXXX">
-    </div>
-
-    <button class="btn-setup" onclick="saveSetup()">✓ Start Now →</button>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     MAIN APP
-════════════════════════════════ -->
-<div id="main-app">
-  <div class="app-header">
-    <div class="header-logo" id="app-header-logo">🏫</div>
-    <div class="header-info">
-      <h1 id="app-school-name">School</h1>
-      <p id="app-school-addr">ID Card Management System</p>
-    </div>
-    <div class="header-right">
-      <button class="btn-settings" onclick="resetSetup()">⚙ Setup</button>
-    </div>
-  </div>
+<!-- PIN MODAL removed — role selection se hi admin access milta hai -->
 
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('form', this)">➕ Add</div>
-    <div class="tab" onclick="switchTab('list', this)">📋 Students</div>
-    <div class="tab" onclick="switchTab('preview', this)">🪪 ID Card</div>
-    <div class="tab" onclick="switchTab('export', this)">📤 Export</div>
-  </div>
-
-  <!-- TAB: FORM -->
-  <div id="tab-form">
-    <div id="sync-status-bar" class="alert alert-warning" style="display:none"></div>
-
-    <div class="card">
-      <div class="section-label">Student Ki Photo</div>
-      <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
-        <div class="photo-icon">📷</div>
-        <div class="photo-hint">Camera se photo lo ya gallery se choose karo</div>
-      </div>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-    </div>
-
-    <div class="card">
-      <div class="section-label">Student Ki Jankari</div>
-      <div class="form-group">
-        <label>Student Ka Poora Naam *</label>
-        <input type="text" id="f-name" placeholder="Naam likhein">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Class *</label>
-          <select id="f-class">
-            <option value="">-- Class --</option>
-            <option>Nursery</option><option>LKG</option><option>UKG</option>
-            <option>Class 1</option><option>Class 2</option><option>Class 3</option>
-            <option>Class 4</option><option>Class 5</option><option>Class 6</option>
-            <option>Class 7</option><option>Class 8</option><option>Class 9</option>
-            <option>Class 10</option><option>Class 11</option><option>Class 12</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Section</label>
-          <input type="text" id="f-section" placeholder="A / B / C ...">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Roll Number *</label>
-        <input type="number" id="f-roll" placeholder="Roll No.">
-      </div>
-      <div class="form-group">
-        <label>Address</label>
-        <input type="text" id="f-addr" placeholder="Village, Block, District">
-      </div>
-      <div class="form-group">
-        <label>Parent/Guardian Ka Naam</label>
-        <input type="text" id="f-parent" placeholder="Father/Mother ka naam">
-      </div>
-      <div class="form-group">
-        <label>Parent Ka Mobile Number</label>
-        <input type="tel" id="f-mobile" placeholder="9XXXXXXXXX">
+<!-- ══════════════════════════════════════
+     SETUP SCREEN
+══════════════════════════════════════ -->
+<div id="setup" class="screen">
+  <div class="setup-card">
+    <div class="setup-brand">
+      <div class="setup-logo" id="setup-logo" onclick="document.getElementById('logo-input').click()">RPS</div>
+      <div>
+		<div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:2px">Schoolodeal Venture Pvt. Ltd.</div>
+        <h1>Radiant Public School</h1>
+        <p>ID Card System — Setup</p>
       </div>
     </div>
 
-    <button class="btn-primary" id="submit-btn" onclick="submitStudent()">
-      ✓ Save &amp; Next Student
-    </button>
-  </div>
-
-  <!-- TAB: LIST -->
-  <div id="tab-list" style="display:none">
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">Total</div></div>
-      <div class="stat-box"><div class="stat-num" id="st-photo">0</div><div class="stat-lbl">Photos</div></div>
-      <div class="stat-box"><div class="stat-num" id="st-synced">0</div><div class="stat-lbl">Synced</div></div>
+    <div class="setup-note">
+      📌 Apna naam aur role chunein. <strong>Principal</strong> ko Admin tab milega — sab students dekh, edit, delete kar sakenge. <strong>Teacher</strong> sirf data entry kar sakenge.
     </div>
-    <div style="display:flex; gap:8px; margin-bottom:12px;">
-      <input type="text" id="search-input" placeholder="Naam ya class se search karein..." style="flex:1; padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit;" oninput="renderList()">
-    </div>
-    <div id="student-list-container"></div>
-  </div>
 
-  <!-- TAB: ID CARD PREVIEW -->
-  <div id="tab-preview" style="display:none">
-    <div class="card">
-      <div class="section-label">Student Chunein</div>
-      <select id="preview-select" onchange="renderIDCard()" style="width:100%; padding:10px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit;">
-        <option value="">-- Student chunein --</option>
+    <div class="fld">
+      <label>Aapka Naam <em>*</em></label>
+      <input type="text" id="user-name" placeholder="Teacher ya Principal ka naam">
+    </div>
+    <div class="fld">
+      <label>Role <em>*</em></label>
+      <select id="user-role">
+        <option value="teacher">Teacher (Data Entry)</option>
+        <option value="principal">Principal / Admin</option>
       </select>
     </div>
-    <div id="id-card-container">
-      <div class="empty-state">
-        <div class="empty-icon">🪪</div>
-        Upar se student chunein
+    <div class="fld">
+      <label>School Logo (optional)</label>
+      <div class="logo-drop" id="logo-drop" onclick="document.getElementById('logo-input').click()">
+        <p>📷 Logo upload karo (tap karo)</p>
       </div>
+      <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
     </div>
+
+    <button class="btn btn-blue" onclick="doSetup()">Shuru Karein →</button>
   </div>
+</div>
 
-  <!-- TAB: EXPORT -->
-  <div id="tab-export" style="display:none">
-    <div class="card">
-      <div class="section-label">Teacher Link Share Karein</div>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Class teacher ko ye link bhejein — woh same sheet mein apni class ka data add kar sakenge.</p>
-      <button class="btn-success" onclick="openShareScreen()" style="width:100%; margin-bottom:0;">📤 Teacher Link Generate Karein</button>
-    </div>
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app" class="screen">
+  <div class="wrap">
 
-    <div class="card">
-      <div class="section-label">Google Sheets Sync</div>
-      <div class="sync-info-box">
-        <p>
-          📊 <strong>Google Sheet:</strong><br>
-          <a href="https://docs.google.com/spreadsheets/d/1RgUdXgC6uRx4EsbWWoqxnqxbhYNSo1nZZvqFWVpusd8/edit" target="_blank">Sheet kholein →</a>
-          <br><br>
-          📁 <strong>Drive Folder:</strong> School naam + session se automatic folder banta hai.<br>
-          <a href="https://drive.google.com" target="_blank">Drive kholein →</a>
-        </p>
+    <!-- Header -->
+    <div class="hdr">
+      <div class="hdr-logo" id="hdr-logo">RPS</div>
+      <div style="flex:1;min-width:0">
+		<div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:2px">Schoolodeal Venture Pvt. Ltd.</div>
+        <h1>Radiant Public School</h1>
+        <p id="hdr-sub">Loading...</p>
       </div>
-      <button class="btn-primary" id="sync-btn" onclick="syncToGoogle()" style="margin-bottom:10px;">
-        🔄 Sync to Google Sheet
-      </button>
-      <div id="sync-result"></div>
+      <button class="hdr-btn" onclick="goSetup()">⚙ Reset</button>
     </div>
 
-    <div class="card">
-      <div class="section-label">Excel / CSV Download</div>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Saara data CSV file mein download karein — Excel mein seedha khulega.</p>
-      <button class="btn-success" onclick="exportCSV()" style="width:100%;">⬇ Download CSV (Excel)</button>
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" id="tab-btn-add"    onclick="showTab('add')">➕ Add</div>
+      <div class="tab"        id="tab-btn-list"   onclick="showTab('list')">📋 Students</div>
+      <div class="tab"        id="tab-btn-card"   onclick="showTab('card')">🪪 ID Card</div>
+      <div class="tab"        id="tab-btn-admin"  onclick="showTab('admin')" style="display:none">📊 Admin</div>
+      <div class="tab"        id="tab-btn-export" onclick="showTab('export')">📤 Export</div>
     </div>
 
-    <div class="card">
-      <div class="section-label">Bulk ID Cards Print</div>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Saare ya kisi ek class ke ID cards print karein.</p>
-      <div class="form-group">
-        <label>Class filter (sab ke liye blank chhodo)</label>
-        <select id="print-class-filter" style="width:100%; padding:10px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit;">
-          <option value="">-- Sab Classes --</option>
+    <!-- TAB: ADD / EDIT -->
+    <div class="tab-pane active" id="pane-add">
+      <div class="alert alert-info" id="edit-banner" style="display:none">
+        ✏️ <strong>Edit Mode</strong> — Data update karo, phir Update button dabao
+      </div>
+
+      <!-- Photo -->
+      <div class="card">
+        <div class="card-hd">Student Photo</div>
+        <div class="photo-zone" id="photo-zone" onclick="takePhoto()">
+          <div class="pz-icon">📷</div>
+          <div class="pz-hint"><b>Camera se photo lo</b> ya gallery se choose karo<br><small>3:4 passport size crop hogi</small></div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="onPhotoSelected(this)">
+        <button class="btn btn-ghost" style="margin-top:8px" onclick="galleryPhoto()">🖼 Gallery se choose karo</button>
+      </div>
+
+      <!-- Fields -->
+      <div class="card">
+        <div class="card-hd">Student Details</div>
+        <div class="fgrid">
+          <div class="fg full">
+            <label>Poora Naam <em>*</em></label>
+            <input type="text" id="f-name" placeholder="Student ka full name">
+          </div>
+          <div class="fg">
+            <label>Father's Name <em>*</em></label>
+            <input type="text" id="f-father" placeholder="Father ka naam">
+          </div>
+          <div class="fg">
+            <label>Mother's Name</label>
+            <input type="text" id="f-mother" placeholder="Mother ka naam">
+          </div>
+          <div class="fg">
+            <label>Date of Birth</label>
+            <input type="date" id="f-dob">
+          </div>
+          <div class="fg">
+            <label>Blood Group</label>
+            <select id="f-blood">
+              <option value="">-- Select --</option>
+              <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+              <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Class <em>*</em></label>
+            <select id="f-class">
+              <option value="">-- Class --</option>
+              <option>Nursery</option><option>KG</option><option>LKG</option><option>UKG</option>
+              <option>Class 1</option><option>Class 2</option><option>Class 3</option>
+              <option>Class 4</option><option>Class 5</option><option>Class 6</option>
+              <option>Class 7</option><option>Class 8</option><option>Class 9</option>
+              <option>Class 10</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Section</label>
+            <input type="text" id="f-section" placeholder="A / B / C" oninput="this.value=this.value.toUpperCase()" style="text-transform:uppercase">
+          </div>
+          <div class="fg">
+            <label>Roll Number <em>*</em></label>
+            <input type="number" id="f-roll" placeholder="Roll No">
+          </div>
+          <div class="fg">
+            <label>Gender</label>
+            <select id="f-gender">
+              <option value="">-- Gender --</option>
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fg full">
+            <label>Address</label>
+            <input type="text" id="f-addr" placeholder="Village, Block, District">
+          </div>
+          <div class="fg full">
+            <label>Parent Mobile</label>
+            <input type="tel" id="f-mobile" placeholder="9XXXXXXXXX" maxlength="10">
+          </div>
+        </div>
+      </div>
+
+      <div class="row-btns">
+        <button class="btn btn-ghost" id="cancel-btn" style="display:none" onclick="cancelEdit()">✕ Cancel</button>
+        <button class="btn btn-blue" id="submit-btn" onclick="submitStudent()">✓ Submit &amp; Next</button>
+      </div>
+    </div>
+
+    <!-- TAB: LIST -->
+    <div class="tab-pane" id="pane-list">
+      <div class="stats">
+        <div class="stat"><div class="stat-n" id="stat-total">0</div><div class="stat-l">Total</div></div>
+        <div class="stat"><div class="stat-n" id="stat-photos">0</div><div class="stat-l">Photos</div></div>
+        <div class="stat"><div class="stat-n" id="stat-synced">0</div><div class="stat-l">Synced</div></div>
+      </div>
+      <div class="search-row">
+        <input type="text" id="list-search" placeholder="Search naam, class, roll..." oninput="renderList()">
+        <button class="btn btn-ghost btn-sm" onclick="syncPending(false)">🔄 Sync</button>
+      </div>
+      <div id="list-container"></div>
+    </div>
+
+    <!-- TAB: ID CARD -->
+    <div class="tab-pane" id="pane-card">
+      <div class="card">
+        <div class="card-hd">Student Chunein</div>
+        <select id="card-select" onchange="renderCard()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;color:var(--text)">
+          <option value="">-- Student chunein --</option>
         </select>
       </div>
-      <button class="btn-primary" onclick="bulkPrint()">🖨 Print ID Cards</button>
+      <div id="card-container">
+        <div class="empty"><div class="empty-icon">🪪</div>Upar se student chunein</div>
+      </div>
     </div>
+
+    <!-- TAB: ADMIN -->
+    <div class="tab-pane" id="pane-admin">
+      <div class="card">
+        <div class="card-hd">All Students — Google Sheet</div>
+        <div class="alert alert-info" style="margin-bottom:12px">Sab teachers ka combined data Sheet se fetch hoga.</div>
+        <div class="search-row">
+          <input type="text" id="admin-search" placeholder="Search..." oninput="filterAdmin()">
+          <button class="btn btn-blue btn-sm" onclick="fetchAdmin()">🔄 Fetch</button>
+        </div>
+        <div class="stats" id="admin-stats" style="display:none"></div>
+        <div id="admin-table"></div>
+      </div>
+    </div>
+
+    <!-- TAB: EXPORT -->
+    <div class="tab-pane" id="pane-export">
+      <div class="card">
+        <div class="card-hd">Google Sheet Sync</div>
+        <div id="pending-alert" class="alert alert-warning" style="display:none"></div>
+        <button class="btn btn-blue" style="margin-bottom:8px" onclick="syncPending(false)">🔄 Sync to Google Sheet</button>
+        <div id="sync-result"></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Excel / CSV Download</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Saara data CSV mein — Excel mein seedha khulega.</p>
+        <button class="btn btn-green" onclick="exportCSV()">⬇ Download CSV</button>
+      </div>
+      <div class="card">
+        <div class="card-hd">Bulk ID Card Print</div>
+        <select id="print-class" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;margin-bottom:10px">
+          <option value="">-- Sab Classes --</option>
+        </select>
+        <button class="btn btn-blue" onclick="bulkPrint()">🖨 Print ID Cards</button>
+      </div>
+    </div>
+
   </div>
 </div>
-
-
-<!-- ════════════════════════════════
-     SHARE / TEACHER LINK MODAL
-════════════════════════════════ -->
-<div id="share-screen">
-  <div class="share-card">
-    <div class="share-title">📤 Teacher Link Share Karein</div>
-    <div class="share-sub">Ye link class teacher ko bhejein — woh seedha student form kholega</div>
-    <div class="share-link-box" id="share-link-text">Link generate ho raha hai...</div>
-    <div class="share-btn-row">
-      <button class="btn-copy" onclick="copyShareLink()">📋 Copy Link</button>
-      <button class="btn-wa" onclick="shareOnWhatsApp()">💬 WhatsApp</button>
-    </div>
-    <button class="btn-close-share" onclick="closeShareScreen()">✕ Band Karein</button>
-  </div>
-</div>
-
-<!-- PRINT AREA (hidden) -->
-<div id="print-area" style="display:none"></div>
 
 <script>
-// ══════════════════════════════════════
-// EMBEDDED CONFIG — Teacher ko kuch nahi karna
-// ══════════════════════════════════════
-const GAS_URL   = 'https://script.google.com/macros/s/AKfycbwgqMq0R06RDqBfmf4J3Ja3Fye9aFSoERTlGxviTgrsH6Q_12c4GNvaosaQ0X-AxRnjPw/exec';
-const SHEET_ID  = '1RgUdXgC6uRx4EsbWWoqxnqxbhYNSo1nZZvqFWVpusd8';
+// ╔══════════════════════════════════════════════════╗
+// ║  SIRF YE LINE CHANGE KARO — APNA URL DAALO      ║
+// ╚══════════════════════════════════════════════════╝
+var GAS_URL = "https://script.google.com/macros/s/AKfycbwH87bKVcCtGB94X3ZdITpViiS3iFmemm9gX3U84XzeQAc9ypIrA35m-AxTIivySaSmAg/exec";
 
-// ══════════════════════════════════════
-// URL TOKEN — Teacher Link Support
-// ══════════════════════════════════════
-// Token = base64 encoded school info in URL param ?t=XXXXX
-// Teacher ke browser mein koi localStorage nahi hota
-// Token se school info decode karke directly app open hoti hai
+// School constants
+var SCHOOL = { name:"Radiant Public School", code:"RPS2025", address:"Bihar, India", session:"2025-26", phone:"" };
 
-function getUrlToken() {
-  return new URLSearchParams(window.location.search).get('t');
+// ─── STATE ────────────────────────────────────────
+var students   = JSON.parse(localStorage.getItem('rps_students') || '[]');
+var user       = JSON.parse(localStorage.getItem('rps_user')     || 'null');
+var photob64   = null;
+var cropper    = null;
+var editId     = null;
+var adminData  = [];
+
+// ─── ID GENERATOR ─────────────────────────────────
+// Online:  GAS se real ID milti hai → SD10001, SD10002 (atomic counter)
+// Offline: Local TEMP ID → TEMP_timestamp_random
+//          Internet aane pe GAS real ID deta hai, TEMP replace hoti hai
+
+function generateTempId() {
+  return 'TEMP_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
 }
 
-function decodeToken(token) {
-  try {
-    return JSON.parse(atob(decodeURIComponent(token)));
-  } catch(e) { return null; }
+function isTempId(id) {
+  return id && id.indexOf('TEMP_') === 0;
 }
 
-function encodeToken(info) {
-  // Logo hata ke token banao (URL chhoti rakho)
-  const slim = {
-    name:      info.name,
-    address:   info.address,
-    session:   info.session,
-    principal: info.principal,
-    phone:     info.phone,
-    gasUrl:    info.gasUrl  || GAS_URL,
-    sheetId:   info.sheetId || SHEET_ID
-    // logo intentionally skip — URL bohot badi ho jaati
-  };
-  return encodeURIComponent(btoa(JSON.stringify(slim)));
-}
-
-// ══════════════════════════════════════
-// DATA
-// ══════════════════════════════════════
-// Teacher ke liye alag localStorage key (token se) taaki data mix na ho
-const urlToken = getUrlToken();
-const STORE_KEY = urlToken ? 'rps_students_t_' + urlToken.substring(0,12) : 'rps_students';
-
-let students   = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
-let schoolInfo = JSON.parse(localStorage.getItem('rps_school') || 'null');
-let currentPhoto = null;
-let schoolLogo   = null;
-let isTeacherMode = false;
-
-// ══════════════════════════════════════
-// SETUP
-// ══════════════════════════════════════
-function handleLogoUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    schoolLogo = e.target.result;
-    const area = document.getElementById('logoUploadArea');
-    area.innerHTML = `<img src="${schoolLogo}" class="logo-preview"><div class="logo-text" style="color:var(--green);">✓ Logo ready!</div>`;
-    area.classList.add('has-logo');
-    document.getElementById('setup-logo-preview').innerHTML = `<img src="${schoolLogo}" style="width:60px;height:60px;object-fit:cover;border-radius:50%;">`;
-  };
-  reader.readAsDataURL(file);
-}
-
-function saveSetup() {
-  const name = document.getElementById('s-name').value.trim();
-  if (!name) { alert('School ka naam zaroori hai!'); return; }
-
-  const info = {
-    name,
-    address:   document.getElementById('s-addr').value.trim(),
-    session:   document.getElementById('s-session').value.trim() || '2025-26',
-    principal: document.getElementById('s-principal').value.trim(),
-    phone:     document.getElementById('s-phone').value.trim(),
-    gasUrl:    GAS_URL,    // embedded — teacher ko dalna nahi
-    sheetId:   SHEET_ID,  // embedded — teacher ko dalna nahi
-    logo:      schoolLogo
-  };
-
-  localStorage.setItem('rps_school', JSON.stringify(info));
-  schoolInfo = info;
-  initApp();
-}
-
-function resetSetup() {
-  if (confirm('Setup screen pe wapas jaana chahte ho?')) {
-    // Pre-fill fields with existing data
-    if (schoolInfo) {
-      document.getElementById('s-name').value      = schoolInfo.name      || '';
-      document.getElementById('s-addr').value      = schoolInfo.address   || '';
-      document.getElementById('s-session').value   = schoolInfo.session   || '2025-26';
-      document.getElementById('s-principal').value = schoolInfo.principal || '';
-      document.getElementById('s-phone').value     = schoolInfo.phone     || '';
-      if (schoolInfo.logo) {
-        schoolLogo = schoolInfo.logo;
-        const area = document.getElementById('logoUploadArea');
-        area.innerHTML = `<img src="${schoolLogo}" class="logo-preview"><div class="logo-text" style="color:var(--green);">✓ Logo ready!</div>`;
-        area.classList.add('has-logo');
-        document.getElementById('setup-logo-preview').innerHTML = `<img src="${schoolLogo}" style="width:60px;height:60px;object-fit:cover;border-radius:50%;">`;
-      }
-    }
-    document.getElementById('setup-screen').style.display = 'flex';
-    document.getElementById('main-app').style.display     = 'none';
-  }
-}
-
-function initApp() {
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('main-app').style.display     = 'block';
-  document.getElementById('app-school-name').textContent = schoolInfo.name;
-  document.getElementById('app-school-addr').textContent = isTeacherMode
-    ? '👨‍🏫 Teacher Mode — ' + (schoolInfo.session || '')
-    : (schoolInfo.address || 'ID Card System');
-  if (schoolInfo.logo) {
-    document.getElementById('app-header-logo').innerHTML = `<img src="${schoolInfo.logo}" style="width:46px;height:46px;object-fit:cover;border-radius:50%;">`;
-  }
-  // Teacher mode mein Setup button hide karo
-  if (isTeacherMode) {
-    document.querySelector('.btn-settings').style.display = 'none';
-  }
-  populatePrintClassFilter();
-  checkPendingSync();
-}
-
-// Auto-load agar setup pehle se hua hai
-window.onload = () => {
-  const token = getUrlToken();
-
-  if (token) {
-    // ── TEACHER MODE ── URL mein token hai
-    const decoded = decodeToken(token);
-    if (decoded && decoded.name) {
-      isTeacherMode = true;
-      schoolInfo = {
-        ...decoded,
-        gasUrl:  decoded.gasUrl  || GAS_URL,
-        sheetId: decoded.sheetId || SHEET_ID
-      };
-      // Teacher mode UI tweaks
-      document.getElementById('teacher-mode-badge').style.display = 'block';
-      document.getElementById('setup-title-text').textContent = '👨‍🏫 Teacher Mode';
-      document.getElementById('setup-subtitle-text').textContent = decoded.name + ' — ' + (decoded.session || '');
-      // Setup fields hide karo, seedha app kholein
-      initApp();
-      return;
-    }
-  }
-
-  if (schoolInfo) {
-    // Ensure embedded URLs are always latest
-    schoolInfo.gasUrl  = GAS_URL;
-    schoolInfo.sheetId = SHEET_ID;
-    localStorage.setItem('rps_school', JSON.stringify(schoolInfo));
-    initApp();
+// ─── BOOT ─────────────────────────────────────────
+window.onload = function() {
+  byId('f-dob').max = new Date().toISOString().split('T')[0];
+  if (user) {
+    showApp();
+  } else {
+    showScreen('setup');
   }
 };
 
-// ══════════════════════════════════════
-// TABS
-// ══════════════════════════════════════
-function switchTab(tab, el) {
-  ['form','list','preview','export'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-'+tab).style.display = 'block';
-  el.classList.add('active');
-  if (tab === 'list')    renderList();
-  if (tab === 'preview') renderPreviewSelect();
-  if (tab === 'export')  populatePrintClassFilter();
+function showScreen(id) {
+  byId('setup').style.display = 'none';
+  byId('app').style.display   = 'none';
+  if (id === 'setup') {
+    byId('setup').style.display = 'flex';
+  } else {
+    byId('app').style.display = 'block';
+  }
 }
 
-// ══════════════════════════════════════
-// PHOTO
-// ══════════════════════════════════════
-function handlePhoto(input) {
-  const file = input.files[0];
+function showApp() {
+  showScreen('app');
+  byId('hdr-sub').textContent = user.role === 'principal'
+    ? '🏫 ' + user.name + ' — Admin'
+    : '👨‍🏫 ' + user.name;
+  if (user.logo) byId('hdr-logo').innerHTML = '<img src="' + user.logo + '">';
+  byId('tab-btn-admin').style.display = user.role === 'principal' ? '' : 'none';
+  renderList();
+  showPendingAlert();
+  if (navigator.onLine) {
+    syncPending(true);
+    if (user.role === 'principal') fetchAdmin();
+  }
+}
+
+// ─── SETUP ────────────────────────────────────────
+function doSetup() {
+  var name = byId('user-name').value.trim();
+  var role = byId('user-role').value;
+  if (!name) { toast('Naam zaroori hai!', 'error'); return; }
+  var prevLogo = user ? user.logo : null;
+  user = { name: name, role: role, logo: prevLogo };
+  localStorage.setItem('rps_user', JSON.stringify(user));
+  showApp();
+}
+
+// PIN removed — direct role-based access
+
+
+function handleLogoUpload(input) {
+  var file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxSize = 400;
-      let w = img.width, h = img.height;
-      if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
-      else        { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      currentPhoto = canvas.toDataURL('image/jpeg', 0.75);
-      const area = document.getElementById('photoArea');
-      area.classList.add('has-photo');
-      area.innerHTML = `<img class="photo-preview" src="${currentPhoto}"><div class="photo-hint" style="color:var(--green);font-size:11px;">✓ Photo ready! Change karne ke liye tap karo</div>`;
+  var r = new FileReader();
+  r.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var c = document.createElement('canvas'); c.width=200; c.height=200;
+      c.getContext('2d').drawImage(img,0,0,200,200);
+      var b64 = c.toDataURL('image/jpeg', 0.85);
+      if (!user) user = {};
+      user.logo = b64;
+      localStorage.setItem('rps_user', JSON.stringify(user));
+      byId('setup-logo').innerHTML = '<img src="'+b64+'">';
+      byId('logo-drop').innerHTML  = '<img src="'+b64+'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin:0 auto;display:block"><p style="color:var(--green);font-size:12px;margin-top:6px">✓ Logo ready</p>';
+      if (byId('hdr-logo')) byId('hdr-logo').innerHTML = '<img src="'+b64+'">';
     };
     img.src = e.target.result;
   };
-  reader.readAsDataURL(file);
+  r.readAsDataURL(file);
 }
 
-// ══════════════════════════════════════
-// SUBMIT
-// ══════════════════════════════════════
+function goSetup() {
+  if (!confirm('Setup reset karein? (Student data safe rahega)')) return;
+  localStorage.removeItem('rps_user');
+  user = null;
+  byId('user-name').value = '';
+  byId('user-role').value = 'teacher';
+  showScreen('setup');
+}
+
+// ─── TABS ─────────────────────────────────────────
+var TABS = ['add','list','card','admin','export'];
+function showTab(name) {
+  TABS.forEach(function(t) {
+    var btn  = byId('tab-btn-'  + t);
+    var pane = byId('pane-' + t);
+    if (btn)  btn.classList.toggle('active', t === name);
+    if (pane) pane.classList.toggle('active', t === name);
+  });
+  if (name === 'list')   { renderList(); }
+  if (name === 'card')   { fillCardSelect(); }
+  if (name === 'export') { showPendingAlert(); fillPrintClasses(); }
+}
+
+// ─── PHOTO ────────────────────────────────────────
+function takePhoto() {
+  var inp = byId('photo-input');
+  try { inp.setAttribute('capture','environment'); } catch(e) {}
+  inp.click();
+}
+function galleryPhoto() {
+  var inp = byId('photo-input');
+  inp.removeAttribute('capture');
+  inp.click();
+}
+function onPhotoSelected(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Sirf image file allowed!','error'); return; }
+  if (file.size > 15*1024*1024) { toast('Image bahut badi (max 15MB)','error'); return; }
+  var r = new FileReader();
+  r.onload = function(e) { openCrop(e.target.result); };
+  r.onerror = function() { toast('File read nahi ho saka','error'); };
+  r.readAsDataURL(file);
+  input.value = '';
+}
+function openCrop(src) {
+  byId('crop-img').src = src;
+  byId('crop-modal').classList.add('open');
+  setTimeout(function() {
+    if (cropper) { cropper.destroy(); cropper = null; }
+    cropper = new Cropper(byId('crop-img'), {
+      aspectRatio:3/4, viewMode:1, dragMode:'move',
+      autoCropArea:0.9, responsive:true, guides:true,
+      cropBoxMovable:true, cropBoxResizable:true
+    });
+  }, 250);
+}
+function closeCrop() {
+  byId('crop-modal').classList.remove('open');
+  if (cropper) { cropper.destroy(); cropper = null; }
+}
+function applyCrop() {
+  if (!cropper) { closeCrop(); return; }
+  var canvas = cropper.getCroppedCanvas({width:300,height:400,imageSmoothingQuality:'high'});
+  photob64 = canvas.toDataURL('image/jpeg', 0.82);
+  closeCrop();
+  var zone = byId('photo-zone');
+  zone.classList.add('filled');
+  zone.innerHTML =
+    '<img class="pz-img" src="'+photob64+'">' +
+    '<div class="pz-btns">' +
+    '<button class="btn btn-ghost btn-sm" onclick="takePhoto()">📷 Retake</button>' +
+    '<button class="btn btn-ghost btn-sm" onclick="galleryPhoto()">🖼 Gallery</button>' +
+    '<button class="btn btn-danger btn-sm" onclick="clearPhoto()">✕ Hatao</button>' +
+    '</div>';
+  toast('✓ Photo ready!','success');
+}
+function clearPhoto() {
+  photob64 = null;
+  var zone = byId('photo-zone');
+  zone.classList.remove('filled');
+  zone.innerHTML =
+    '<div class="pz-icon">📷</div>' +
+    '<div class="pz-hint"><b>Camera se photo lo</b> ya gallery se choose karo<br><small>3:4 passport size crop hogi</small></div>';
+}
+
+// ─── SUBMIT ───────────────────────────────────────
 function submitStudent() {
-  const name = document.getElementById('f-name').value.trim();
-  const cls     = document.getElementById('f-class').value;
-  const section = document.getElementById('f-section').value.trim();
-  const roll    = document.getElementById('f-roll').value.trim();
-  if (!name || !cls || !roll) { alert('Naam, Class aur Roll Number zaroori hai!'); return; }
+  var name   = byId('f-name').value.trim();
+  var father = byId('f-father').value.trim();
+  var cls    = byId('f-class').value;
+  var roll   = byId('f-roll').value.trim();
+  if (!name)   { toast('Student naam zaroori hai!','error'); return; }
+  if (!father) { toast('Father naam zaroori hai!','error'); return; }
+  if (!cls)    { toast('Class chunein!','error'); return; }
+  if (!roll)   { toast('Roll number zaroori hai!','error'); return; }
 
-  const btn = document.getElementById('submit-btn');
+  var now    = new Date().toISOString();
+  var isEdit = !!editId;
+
+  // Edit case: existing ID use karo
+  if (isEdit) {
+    var exist = students.find(function(s){ return s.id === editId; });
+    var s = buildStudentObj(editId, exist, now);
+    students = students.map(function(x){ return x.id === editId ? s : x; });
+    save();
+    toast('✓ ' + name + ' update ho gaya!', 'success');
+    cancelEdit();
+    if (navigator.onLine) syncOne(s);
+    return;
+  }
+
+  // New student
+  var btn = byId('submit-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Save ho raha hai...';
 
-  const student = {
-    id:        Date.now(),
-    name, cls, roll,
-    section:   section,
-    address:   document.getElementById('f-addr').value.trim(),
-    parent:    document.getElementById('f-parent').value.trim(),
-    mobile:    document.getElementById('f-mobile').value.trim(),
-    photo:     currentPhoto,
-    // School info embed in each record
-    schoolName: schoolInfo.name,
-    session:    schoolInfo.session,
-    synced:    false,
-    timestamp: new Date().toISOString()
-  };
-
-  students.push(student);
-  saveStudents();
-  resetForm();
-
-  btn.disabled = false;
-  btn.innerHTML = '✓ Save &amp; Next Student';
-
-  showToast('✓ ' + name + ' save ho gaya!');
-
-  // Auto-sync if online
   if (navigator.onLine) {
-    syncSingleStudent(student);
+    // ── ONLINE: GAS se real ID lo pehle ──
+    btn.textContent = '⏳ ID le rahe hain...';
+    post({ action: 'getNextId' }, function(data) {
+      btn.disabled = false;
+      btn.textContent = '✓ Submit & Next';
+      var realId;
+      if (data && data.ok && data.studentId) {
+        realId = data.studentId; // e.g. SD10003
+      } else {
+        // GAS ne ID nahi diya — TEMP use karo
+        realId = generateTempId();
+        toast('⚠ ID abhi TEMP hai — sync pe update hogi', 'warning');
+      }
+      var s = buildStudentObj(realId, null, now);
+      // Agar real SD ID mili to already "pre-registered" hai sheet mein
+      s.preRegistered = (data && data.ok && data.studentId) ? true : false;
+      students.push(s);
+      save();
+      toast('✓ ' + name + ' save ho gaya! ID: ' + realId, 'success');
+      cancelEdit();
+      // Sync karo (photo + baaki data)
+      syncOne(s);
+    });
+  } else {
+    // ── OFFLINE: TEMP ID do ──
+    btn.disabled = false;
+    btn.textContent = '✓ Submit & Next';
+    var tempId = generateTempId();
+    var s = buildStudentObj(tempId, null, now);
+    students.push(s);
+    save();
+    toast('💾 Offline save! ID baad mein milegi jab internet aayega', 'warning');
+    cancelEdit();
+    // Sync queue mein hai — internet aane pe automatic hoga
   }
 }
 
-function resetForm() {
-  ['f-name','f-roll','f-addr','f-parent','f-mobile','f-section'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-class').value = '';
-  currentPhoto = null;
-  document.getElementById('photoInput').value = '';
-  const area = document.getElementById('photoArea');
-  area.classList.remove('has-photo');
-  area.innerHTML = `<div class="photo-icon">📷</div><div class="photo-hint">Camera se photo lo ya gallery se choose karo</div>`;
+// Student object banane ka helper
+function buildStudentObj(sid, exist, now) {
+  return {
+    id:          sid,
+    name:        byId('f-name').value.trim(),
+    father:      byId('f-father').value.trim(),
+    mother:      byId('f-mother').value.trim(),
+    dob:         byId('f-dob').value,
+    cls:         byId('f-class').value,
+    section:     byId('f-section').value.trim(),
+    roll:        byId('f-roll').value.trim(),
+    blood:       byId('f-blood').value,
+    gender:      byId('f-gender').value,
+    address:     byId('f-addr').value.trim(),
+    mobile:      byId('f-mobile').value.trim(),
+    school:      SCHOOL.code,
+    addedBy:     user ? user.name : '',
+    driveId:     exist ? (exist.driveId  || '') : '',
+    photoUrl:    exist ? (exist.photoUrl || '') : '',
+    photo:       photob64,
+    synced:      false,
+    prevSynced:  exist ? (exist.synced || exist.prevSynced || false) : false,
+    preRegistered: false,
+    createdAt:   exist ? exist.createdAt : now,
+    updatedAt:   now
+  };
 }
 
-function saveStudents() {
-  localStorage.setItem(STORE_KEY, JSON.stringify(students));
+// ─── EDIT ─────────────────────────────────────────
+function startEdit(sid) {
+  var s = students.find(function(x){return x.id===sid;});
+  if (!s) return;
+  editId = sid;
+  showTab('add');
+  byId('f-name').value    = s.name    || '';
+  byId('f-father').value  = s.father  || '';
+  byId('f-mother').value  = s.mother  || '';
+  byId('f-dob').value     = s.dob     || '';
+  byId('f-class').value   = s.cls     || '';
+  byId('f-section').value = s.section || '';
+  byId('f-roll').value    = s.roll    || '';
+  byId('f-blood').value   = s.blood   || '';
+  byId('f-gender').value  = s.gender  || '';
+  byId('f-addr').value    = s.address || '';
+  byId('f-mobile').value  = s.mobile  || '';
+  photob64 = null;
+  var zone = byId('photo-zone');
+  var editPhotoSrc = s.photoUrl || (s.photo && !s.synced ? s.photo : '');
+  if (editPhotoSrc) {
+    zone.classList.add('filled');
+    zone.innerHTML =
+      '<img class="pz-img" src="'+editPhotoSrc+'" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=pz-icon>📷</div><div class=pz-hint>Photo load nahi hua</div>\'">' +
+      '<div class="pz-btns">' +
+      '<button class="btn btn-ghost btn-sm" onclick="takePhoto()">📷 Replace</button>' +
+      '<button class="btn btn-ghost btn-sm" onclick="galleryPhoto()">🖼 Gallery</button>' +
+      '</div>' +
+      '<p style="font-size:11px;color:var(--muted);margin-top:6px">Existing photo — replace karne ke liye tap karo</p>';
+  }
+  byId('edit-banner').style.display = '';
+  byId('cancel-btn').style.display  = '';
+  byId('submit-btn').textContent = '✓ Update Student';
+  window.scrollTo(0,0);
 }
 
-// ══════════════════════════════════════
-// LIST
-// ══════════════════════════════════════
+function cancelEdit() {
+  editId = null; photob64 = null;
+  byId('edit-banner').style.display = 'none';
+  byId('cancel-btn').style.display  = 'none';
+  byId('submit-btn').textContent = '✓ Submit & Next';
+  clearPhoto();
+  ['f-name','f-father','f-mother','f-dob','f-section','f-roll','f-addr','f-mobile']
+    .forEach(function(id){ byId(id).value=''; });
+  ['f-class','f-blood','f-gender'].forEach(function(id){ byId(id).value=''; });
+}
+
+// ─── DELETE ───────────────────────────────────────
+function delStudent(sid) {
+  if (!confirm('Delete karna chahte ho?')) return;
+  var s = students.find(function(x){return x.id===sid;});
+  students = students.filter(function(x){return x.id!==sid;});
+  save(); renderList(); toast('Deleted!','success');
+  // Delete from sheet if it was ever synced
+  if (s && (s.synced || s.prevSynced)) {
+    post({ action:'delete', studentId: s.id, driveId: s.driveId || '' });
+  }
+}
+
+// ─── LIST ─────────────────────────────────────────
 function renderList() {
-  const q = (document.getElementById('search-input').value || '').toLowerCase();
-  const filtered = students.filter(s =>
-    s.name.toLowerCase().includes(q) ||
-    s.cls.toLowerCase().includes(q)  ||
-    String(s.roll).includes(q)
-  );
-  document.getElementById('st-total').textContent  = students.length;
-  document.getElementById('st-photo').textContent  = students.filter(s => s.photo).length;
-  document.getElementById('st-synced').textContent = students.filter(s => s.synced).length;
+  var q = (byId('list-search').value || '').toLowerCase();
+  var list = students.filter(function(s){
+    return !q || s.name.toLowerCase().includes(q) ||
+      (s.cls||'').toLowerCase().includes(q) ||
+      String(s.roll).includes(q);
+  });
+  byId('stat-total').textContent  = students.length;
+  byId('stat-photos').textContent = students.filter(function(s){return s.photoUrl||s.photo;}).length;
+  byId('stat-synced').textContent = students.filter(function(s){return s.synced;}).length;
 
-  const container = document.getElementById('student-list-container');
+  var c = byId('list-container');
   if (!students.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>Abhi koi student nahi hai.<br>Add tab se student add karo.</div>`;
+    c.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Koi student nahi.<br>Add tab se add karo.</div>';
     return;
   }
-  if (!filtered.length) {
-    container.innerHTML = `<div class="empty-state">Koi nahi mila.</div>`;
-    return;
-  }
-  container.innerHTML = filtered.map(s => `
-    <div class="student-item">
-      <div class="s-avatar">${s.photo ? `<img src="${s.photo}">` : s.name.charAt(0).toUpperCase()}</div>
-      <div class="s-info">
-        <div class="s-name">${s.name}</div>
-        <div class="s-meta">${s.cls}${s.section ? ' - ' + s.section : ''} &bull; Roll: ${s.roll}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-        <span class="s-sync ${s.synced ? 'synced' : 'pending'}">${s.synced ? '✓ Synced' : '⏳ Pending'}</span>
-        <button class="btn-danger" onclick="deleteStudent(${s.id})">🗑 Delete</button>
-      </div>
-    </div>`).join('');
+  if (!list.length) { c.innerHTML = '<div class="empty">Koi nahi mila.</div>'; return; }
+  c.innerHTML = list.map(function(s) {
+    var img = s.photoUrl || s.photo; // photoUrl = Drive URL (permanent), photo = local base64 (temp)
+    return '<div class="s-item">' +
+      '<div class="s-av">' + (img ? '<img src="'+img+'">' : esc(s.name.charAt(0).toUpperCase())) + '</div>' +
+      '<div class="s-info">' +
+        '<div class="s-name">' + esc(s.name) + '</div>' +
+        '<div class="s-meta">' + esc(s.cls) + (s.section?' · '+esc(s.section):'') + ' · Roll: ' + esc(s.roll) + (s.blood?' · '+esc(s.blood):'') + '</div>' +
+        '<div class="s-meta">' + (s.father?'Father: '+esc(s.father):'') + '</div>' +
+      '</div>' +
+      '<div class="s-right">' +
+        '<span class="badge ' + (s.synced ? 'b-synced' : 'b-pending') + '">' + (s.synced ? '✓ Synced' : '⏳ Pending') + '</span>' +
+        (isTempId(s.id) ? '<span class="badge" style="background:#fdecea;color:#c0392b;margin-top:2px">⚠ TEMP ID</span>' : '<span class="badge" style="background:#eaf4fb;color:#1a5276;margin-top:2px">'+esc(s.id)+'</span>') +
+        '<button class="btn btn-ghost btn-sm" onclick="startEdit(\''+s.id+'\')">✏ Edit</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="delStudent(\''+s.id+'\')">Delete</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
-function deleteStudent(id) {
-  if (!confirm('Is student ko delete karna chahte ho?')) return;
-  students = students.filter(s => s.id !== id);
-  saveStudents();
-  renderList();
-}
-
-// ══════════════════════════════════════
-// ID CARD PREVIEW
-// ══════════════════════════════════════
-function renderPreviewSelect() {
-  const sel = document.getElementById('preview-select');
+// ─── ID CARD ──────────────────────────────────────
+function fillCardSelect() {
+  var sel = byId('card-select');
+  var cur = sel.value;
   sel.innerHTML = '<option value="">-- Student chunein --</option>' +
-    students.map(s => `<option value="${s.id}">${s.name} — ${s.cls} — Roll ${s.roll}</option>`).join('');
+    students.map(function(s){
+      return '<option value="'+s.id+'"'+(s.id===cur?' selected':'')+'>'+esc(s.name)+' — '+esc(s.cls)+' — Roll '+esc(s.roll)+'</option>';
+    }).join('');
+  if (cur) renderCard();
 }
 
-function renderIDCard() {
-  const id = parseInt(document.getElementById('preview-select').value);
-  const container = document.getElementById('id-card-container');
-  if (!id) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">🪪</div>Upar se student chunein</div>`; return; }
-  const s = students.find(x => x.id === id);
+function renderCard() {
+  var sid = byId('card-select').value;
+  var c   = byId('card-container');
+  if (!sid) { c.innerHTML='<div class="empty"><div class="empty-icon">🪪</div>Upar se student chunein</div>'; return; }
+  var s = students.find(function(x){return x.id===sid;});
   if (!s) return;
-  container.innerHTML = `
-    <div class="id-card-wrap">
-      ${buildIDCardHTML(s)}
-      <div class="action-bar no-print">
-        <button class="btn-secondary" style="flex:1" onclick="printSingleCard(${s.id})">🖨 Print</button>
-        <button class="btn-secondary" style="flex:1" onclick="downloadCard(${s.id})">⬇ Save</button>
-      </div>
-    </div>`;
+  c.innerHTML = '<div style="padding:16px 4px">' + cardHTML(s) +
+    '<div class="row-btns" style="margin-top:12px">' +
+    '<button class="btn btn-ghost" style="flex:1;width:auto" onclick="printOne(\''+s.id+'\')">🖨 Print</button>' +
+    '<button class="btn btn-blue" style="flex:1;width:auto" onclick="startEdit(\''+s.id+'\')">✏ Edit</button>' +
+    '</div></div>';
 }
 
-function buildIDCardHTML(s) {
-  const school = schoolInfo || {};
-  const logoHTML = school.logo
-    ? `<img src="${school.logo}" style="width:40px;height:40px;object-fit:cover;border-radius:50%;">`
-    : `<span style="font-size:9px;font-weight:700;color:var(--blue);text-align:center;">${(school.name||'S').charAt(0)}</span>`;
-  const photoHTML = s.photo
-    ? `<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover;">`
-    : `<span>No Photo</span>`;
-
-  return `<div class="id-card" id="card-${s.id}">
-    <div class="id-strip"></div>
-    <div class="id-card-header">
-      <div class="id-card-logo">${logoHTML}</div>
-      <div>
-        <div class="id-school-name">${school.name || 'School'}</div>
-        <div class="id-school-addr">${school.address || ''}</div>
-      </div>
-    </div>
-    <div class="id-card-body">
-      <div class="id-photo-box">${photoHTML}</div>
-      <div class="id-details">
-        <div class="id-student-name">${s.name}</div>
-        <div class="id-row"><span class="id-key">Class:</span><span class="id-val">${s.cls}</span></div>
-        <div class="id-row"><span class="id-key">Roll No:</span><span class="id-val">${s.roll}</span></div>
-        ${s.section ? `<div class="id-row"><span class="id-key">Section:</span><span class="id-val">${s.section}</span></div>` : ''}
-        ${s.parent ? `<div class="id-row"><span class="id-key">Parent:</span><span class="id-val">${s.parent}</span></div>` : ''}
-        ${s.mobile ? `<div class="id-row"><span class="id-key">Mobile:</span><span class="id-val">${s.mobile}</span></div>` : ''}
-        ${s.address? `<div class="id-row"><span class="id-key">Address:</span><span class="id-val" style="font-size:10px;">${s.address}</span></div>` : ''}
-      </div>
-    </div>
-    <div class="id-card-footer">
-      <span class="id-footer-text">Session: ${school.session || '2025-26'}</span>
-      <span class="id-footer-text">${school.phone || ''}</span>
-    </div>
-  </div>`;
+function cardHTML(s) {
+  var logoHTML = (user && user.logo)
+    ? '<img src="'+user.logo+'">'
+    : '<span style="font-size:9px;font-weight:700;color:var(--blue)">'+(SCHOOL.name).substring(0,3).toUpperCase()+'</span>';
+  var photoSrc = s.photoUrl || s.photo;
+  // Drive /uc URL ko thumbnail URL mein convert karo
+  if (photoSrc && photoSrc.indexOf('drive.google.com/uc') !== -1) {
+    var idM = photoSrc.match(/[?&]id=([^&]+)/);
+    if (idM) photoSrc = 'https://drive.google.com/thumbnail?id=' + idM[1] + '&sz=w400';
+  }
+  var photoHTML = photoSrc ? '<img src="'+photoSrc+'">' : '<span>No<br>Photo</span>';
+  function r(k,v){ return v?'<div class="id-row"><span class="id-k">'+k+'</span><span class="id-v">'+esc(v)+'</span></div>':''; }
+  return '<div class="id-card">' +
+    '<div class="id-strip"></div>' +
+    '<div class="id-hdr"><div class="id-hdr-logo">'+logoHTML+'</div>' +
+    '<div><div class="id-school">'+esc(SCHOOL.name)+'</div><div class="id-addr">'+esc(SCHOOL.address)+'</div></div></div>' +
+    '<div class="id-body"><div class="id-photo">'+photoHTML+'</div>' +
+    '<div><div class="id-sname">'+esc(s.name)+'</div>' +
+    r('Class',  s.cls+(s.section?' - '+s.section:'')) +
+    r('Roll No',s.roll) +
+    r('DOB',    s.dob) +
+    r('Blood',  s.blood) +
+    r('Father', s.father) +
+    r('Mother', s.mother) +
+    r('Mobile', s.mobile) +
+    '</div></div>' +
+    '<div class="id-ftr"><span>Session: '+esc(SCHOOL.session)+'</span><span>'+esc(SCHOOL.phone)+'</span></div>' +
+  '</div>';
 }
 
-function printSingleCard(id) {
-  const s = students.find(x => x.id === id);
-  if (!s) return;
-  const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head><style>
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; padding:20px; }
-    .id-card { width:340px; border-radius:12px; overflow:hidden; border:1px solid #c0cdd8; }
-    .id-strip { height:4px; background:linear-gradient(90deg,#f0c040,#e74c3c,#1a5276); }
-    .id-card-header { background:#1a5276; color:white; padding:12px 14px; display:flex; align-items:center; gap:10px; }
-    .id-card-logo { width:40px; height:40px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#1a5276; flex-shrink:0; overflow:hidden; }
-    .id-card-logo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-    .id-school-name { font-size:13px; font-weight:600; }
-    .id-school-addr { font-size:9px; opacity:0.8; margin-top:1px; }
-    .id-card-body { background:white; padding:14px; display:flex; gap:12px; }
-    .id-photo-box { width:76px; height:86px; border-radius:8px; background:#eee; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; }
-    .id-photo-box img { width:100%; height:100%; object-fit:cover; }
-    .id-details { flex:1; }
-    .id-student-name { font-size:14px; font-weight:600; color:#1a5276; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:6px; }
-    .id-row { display:flex; font-size:11px; margin-bottom:4px; }
-    .id-key { color:#666; min-width:66px; font-weight:500; }
-    .id-val { color:#1a202c; font-weight:500; }
-    .id-card-footer { background:#1a5276; color:white; padding:7px 14px; display:flex; justify-content:space-between; }
-    .id-footer-text { font-size:9px; opacity:0.85; }
-  </style></head><body>${buildIDCardHTML(s)}</body></html>`);
-  win.document.close();
-  setTimeout(() => win.print(), 500);
-}
-
-// ══════════════════════════════════════
-// BULK PRINT
-// ══════════════════════════════════════
-function populatePrintClassFilter() {
-  const sel = document.getElementById('print-class-filter');
-  if (!sel) return;
-  const classes = [...new Set(students.map(s => s.cls))].sort();
-  sel.innerHTML = '<option value="">-- Sab Classes --</option>' +
-    classes.map(c => `<option>${c}</option>`).join('');
+function printOne(sid) {
+  var s = students.find(function(x){return x.id===sid;});
+  if (s) doPrint([s]);
 }
 
 function bulkPrint() {
-  const filterClass = document.getElementById('print-class-filter').value;
-  const filtered = filterClass ? students.filter(s => s.cls === filterClass) : students;
-  if (!filtered.length) { alert('Koi student nahi mila!'); return; }
+  var fc   = byId('print-class').value;
+  var list = fc ? students.filter(function(s){return s.cls===fc;}) : students;
+  if (!list.length) { toast('Koi student nahi!','error'); return; }
+  doPrint(list);
+}
 
-  const win = window.open('', '_blank');
-  const cardsHTML = filtered.map(s => buildIDCardHTML(s)).join('<div style="page-break-after:always;margin:10px 0;"></div>');
-  win.document.write(`<!DOCTYPE html><html><head><style>
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
-    .id-card { width:320px; border-radius:10px; overflow:hidden; border:1px solid #c0cdd8; margin:0 auto; }
-    .id-strip { height:4px; background:linear-gradient(90deg,#f0c040,#e74c3c,#1a5276); }
-    .id-card-header { background:#1a5276; color:white; padding:10px 12px; display:flex; align-items:center; gap:10px; }
-    .id-card-logo { width:36px; height:36px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; color:#1a5276; flex-shrink:0; overflow:hidden; }
-    .id-card-logo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-    .id-school-name { font-size:12px; font-weight:600; }
-    .id-school-addr { font-size:8px; opacity:0.8; }
-    .id-card-body { background:white; padding:12px; display:flex; gap:10px; }
-    .id-photo-box { width:70px; height:80px; border-radius:6px; background:#eee; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; font-size:10px; color:#999; }
-    .id-photo-box img { width:100%; height:100%; object-fit:cover; }
-    .id-details { flex:1; }
-    .id-student-name { font-size:13px; font-weight:600; color:#1a5276; margin-bottom:6px; border-bottom:1px solid #eee; padding-bottom:5px; }
-    .id-row { display:flex; font-size:10px; margin-bottom:3px; }
-    .id-key { color:#666; min-width:60px; font-weight:500; }
-    .id-val { color:#1a202c; }
-    .id-card-footer { background:#1a5276; color:white; padding:5px 12px; display:flex; justify-content:space-between; }
-    .id-footer-text { font-size:8px; opacity:0.85; }
-    @media print { @page { margin:10mm; } }
-  </style></head><body>${cardsHTML}</body></html>`);
+function doPrint(list) {
+  var logoHTML = (user && user.logo)
+    ? '<img src="'+user.logo+'">'
+    : SCHOOL.name.substring(0,3).toUpperCase();
+  var css = '*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif}'+
+    '.id-card{width:320px;border-radius:10px;overflow:hidden;border:1px solid #b0bec5;margin:12px auto;page-break-inside:avoid}'+
+    '.id-strip{height:5px;background:linear-gradient(90deg,#f0c040,#e74c3c,#1a5276)}'+
+    '.id-hdr{background:#1a5276;color:white;padding:10px 12px;display:flex;align-items:center;gap:10px}'+
+    '.id-hdr-logo{width:38px;height:38px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#1a5276;flex-shrink:0;overflow:hidden}'+
+    '.id-hdr-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}'+
+    '.id-school{font-size:12px;font-weight:700}.id-addr{font-size:8px;opacity:.8}'+
+    '.id-body{background:white;padding:12px;display:flex;gap:10px}'+
+    '.id-photo{width:72px;height:84px;border-radius:6px;background:#eee;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;border:1px solid #ddd;text-align:center}'+
+    '.id-photo img{width:100%;height:100%;object-fit:cover}'+
+    '.id-sname{font-size:13px;font-weight:700;color:#1a5276;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #eee}'+
+    '.id-row{display:flex;font-size:10px;margin-bottom:3px}'+
+    '.id-k{color:#718096;min-width:60px;font-weight:600}.id-v{color:#1a202c}'+
+    '.id-ftr{background:#1a5276;color:white;padding:5px 12px;display:flex;justify-content:space-between;font-size:8px}'+
+    '@media print{@page{margin:8mm}.id-card{page-break-inside:avoid}}';
+  function r(k,v){ return v?'<div class="id-row"><span class="id-k">'+k+'</span><span class="id-v">'+esc(v)+'</span></div>':''; }
+  var cards = list.map(function(s){
+    var phSrc = s.photoUrl || s.photo || '';
+    if (phSrc && phSrc.indexOf('drive.google.com/uc') !== -1) {
+      var idM2 = phSrc.match(/[?&]id=([^&]+)/);
+      if (idM2) phSrc = 'https://drive.google.com/thumbnail?id=' + idM2[1] + '&sz=w400';
+    }
+    var ph = phSrc ? '<img src="'+phSrc+'">' : 'No Photo';
+    return '<div class="id-card">' +
+      '<div class="id-strip"></div>' +
+      '<div class="id-hdr"><div class="id-hdr-logo">'+logoHTML+'</div>' +
+      '<div><div class="id-school">'+esc(SCHOOL.name)+'</div><div class="id-addr">'+esc(SCHOOL.address)+'</div></div></div>' +
+      '<div class="id-body"><div class="id-photo">'+ph+'</div>' +
+      '<div><div class="id-sname">'+esc(s.name)+'</div>' +
+      r('Class', s.cls+(s.section?' - '+s.section:''))+r('Roll No',s.roll)+
+      r('DOB',s.dob)+r('Blood',s.blood)+r('Father',s.father)+r('Mother',s.mother)+r('Mobile',s.mobile)+
+      '</div></div>' +
+      '<div class="id-ftr"><span>Session: '+esc(SCHOOL.session)+'</span><span>'+esc(SCHOOL.phone)+'</span></div>' +
+    '</div>';
+  }).join('');
+  var win = window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'+css+'</style></head><body>'+cards+'</body></html>');
   win.document.close();
-  setTimeout(() => win.print(), 600);
+  setTimeout(function(){win.print();},600);
 }
 
-// ══════════════════════════════════════
-// GOOGLE SHEETS SYNC
-// GAS CORS workaround: photo alag bhejo (no-cors),
-// baaki data JSON GET param se bhejo
-// ══════════════════════════════════════
-
-// Photo ko student record se hata ke alag bhejte hain
-// kyunki no-cors mein response nahi milta,
-// isliye photo Drive mein save krne ka kaam GAS khud karega
-// aur hum student ko optimistically synced mark kar denge.
-
-// ── Photo compress karo Drive ke liye (200px, quality 0.6) ──
-function compressPhotoForDrive(base64) {
-  return new Promise(resolve => {
-    if (!base64) { resolve(''); return; }
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxSize = 400;
-      let w = img.width, h = img.height;
-      if (w > h) { if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; } }
-      else        { if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; } }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', 0.82));
-    };
-    img.onerror = () => resolve(base64); // fallback
-    img.src = base64;
-  });
+// ─── ADMIN FETCH ──────────────────────────────────
+function fetchAdmin() {
+  showLoading('Sheet se fetch ho raha hai...');
+  fetch(GAS_URL + '?action=fetch')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      hideLoading();
+      if (!data.ok) { toast('Fetch error: '+(data.error||''),'error'); return; }
+      adminData = data.students || [];
+      drawAdminTable(adminData);
+      var st = byId('admin-stats');
+      var cls = new Set(adminData.map(function(x){return x.Class||x.cls;}));
+      st.innerHTML =
+        '<div class="stat"><div class="stat-n">'+adminData.length+'</div><div class="stat-l">Total</div></div>'+
+        '<div class="stat"><div class="stat-n">'+adminData.filter(function(x){return x.PhotoURL||x.photoUrl;}).length+'</div><div class="stat-l">Photos</div></div>'+
+        '<div class="stat"><div class="stat-n">'+cls.size+'</div><div class="stat-l">Classes</div></div>';
+      st.style.display = '';
+      toast('✓ '+adminData.length+' students fetched','success');
+    })
+    .catch(function(e){hideLoading();toast('Network error: '+e.message,'error');});
 }
 
-async function postToGAS(payload) {
-  // Photo compress karo (200px) taaki POST body chhoti rahe
-  const compressedPhoto = await compressPhotoForDrive(payload.photo || '');
-
-  // Sabse reliable method: POST with text/plain body
-  // GAS mein e.postData.contents se milega, aur ContentService CORS allow karta hai
-  const bodyData = JSON.stringify({
-    ...payload,
-    photo: compressedPhoto   // ✅ photo ab bhejte hain (compressed)
-  });
-
-  // Method 1: POST (photo + data sab ek saath)
-  try {
-    const res = await fetch(GAS_URL, {
-      method:  'POST',
-      mode:    'cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body:    bodyData
-    });
-    const text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch(_) {
-      // GAS ne response diya lekin JSON nahi — optimistic success
-      return { success: true, optimistic: true };
-    }
-  } catch(corsErr) {
-    // Method 2: GET fallback (sirf text data, bina photo ke) agar CORS fail ho
-    try {
-      const textOnly = { ...payload, photo: '' };
-      const encoded  = encodeURIComponent(JSON.stringify(textOnly));
-      const getUrl   = GAS_URL + '?data=' + encoded;
-      const res2     = await fetch(getUrl, { method: 'GET' });
-      const text2    = await res2.text();
-      try {
-        const json2 = JSON.parse(text2);
-        // Photo GET se nahi gayi, isliye drivePhotoUrl nahi milega
-        return json2;
-      } catch(_) {
-        return { success: true, optimistic: true };
+function drawAdminTable(data) {
+  var c = byId('admin-table');
+  if (!data.length) { c.innerHTML='<div class="empty">Koi data nahi.</div>'; return; }
+  c.innerHTML = '<div class="tbl-wrap"><table><thead><tr>' +
+    '<th>Photo</th><th>Name</th><th>Class</th><th>Roll</th>' +
+    '<th>Father</th><th>DOB</th><th>Blood</th><th>Mobile</th><th>By</th><th>Action</th>' +
+    '</tr></thead><tbody>' +
+    data.map(function(s,i){
+      var nm  = s.Name      || s.name      || '';
+      var cl  = s.Class     || s.cls       || '';
+      var rl  = s.RollNo    || s.roll      || '';
+      var ft  = s.FatherName|| s.father    || '';
+      var db  = s.DOB       || s.dob       || '';
+      var bl  = s.BloodGroup|| s.blood     || '';
+      var mb  = s.Mobile    || s.mobile    || '';
+      var by  = s.AddedBy   || s.addedBy   || '';
+      var ph  = s.PhotoURL  || s.photoUrl  || '';
+      // Drive /uc URL ko thumbnail URL mein convert karo agar needed
+      if (ph && ph.indexOf('drive.google.com/uc') !== -1) {
+        var idMatch = ph.match(/[?&]id=([^&]+)/);
+        if (idMatch) ph = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w200';
       }
-    } catch(e2) {
-      // Method 3: no-cors POST (last resort — blind send)
-      try {
-        await fetch(GAS_URL, {
-          method: 'POST',
-          mode:   'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body:   bodyData
-        });
-        return { success: true, optimistic: true };
-      } catch(e3) {
-        return { success: false, error: e3.message };
-      }
-    }
-  }
+      var sid = s.StudentID || s.id        || '';
+      var did = s.PhotoDriveId || s.driveId || '';
+      var bg  = i%2===0 ? 'white' : '#f8fafc';
+      return '<tr style="background:'+bg+'"><td>' +
+        (ph ? '<img src="'+ph+'" class="t-photo">' : '<div class="t-av">'+esc(nm.charAt(0))+'</div>') +
+        '</td><td><strong>'+esc(nm)+'</strong></td><td>'+esc(cl)+'</td><td>'+esc(rl)+'</td>'+
+        '<td>'+esc(ft||'-')+'</td><td>'+esc(db||'-')+'</td>'+
+        '<td>'+esc(bl||'-')+'</td><td>'+esc(mb||'-')+'</td><td>'+esc(by||'-')+'</td>'+
+        '<td><div style="display:flex;gap:4px">'+
+          '<button class="btn btn-ghost btn-sm" onclick="adminEdit(\''+esc(sid)+'\',\''+esc(nm)+'\',\''+esc(cl)+'\',\''+esc(rl)+'\',\''+esc(ft)+'\',\''+esc(db)+'\',\''+esc(bl)+'\',\''+esc(mb)+'\')" style="white-space:nowrap">✏ Edit</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="adminDelete(\''+esc(sid)+'\',\''+esc(did)+'\',\''+esc(nm)+'\')" style="white-space:nowrap">🗑 Del</button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div>';
 }
 
-async function syncSingleStudent(student) {
-  try {
-    const payload = {
-      ...student,
-      schoolName: schoolInfo.name,
-      session:    schoolInfo.session
-    };
-    const result = await postToGAS(payload);
-    if (result.success) {
-      student.synced = true;
-      if (result.photoUrl) student.drivePhotoUrl = result.photoUrl;
-      saveStudents();
-      const listTab = document.getElementById('tab-list');
-      if (listTab && listTab.style.display !== 'none') renderList();
-      checkPendingSync();
-    }
-  } catch(e) { /* offline */ }
-}
-
-async function syncToGoogle() {
-  const pending = students.filter(s => !s.synced);
-  if (!pending.length) {
-    document.getElementById('sync-result').innerHTML = `<div class="alert alert-success">✓ Sab students already synced hain!</div>`;
+// Admin tab se direct edit — local students list mein dhundho, nahi mila to naya add karo
+function adminEdit(sid, nm, cl, rl, ft, db, bl, mb) {
+  // Pehle local list mein dhundho
+  var local = students.find(function(s){ return s.id === sid; });
+  if (local) {
+    startEdit(sid);
+    toast('Student edit mode mein hai — Add tab mein jaao', 'success');
     return;
   }
-
-  const btn = document.getElementById('sync-btn');
-  btn.innerHTML = `<span class="spinner"></span> Syncing ${pending.length} students...`;
-  btn.disabled  = true;
-
-  let success = 0, fail = 0;
-  for (const student of pending) {
-    const payload = {
-      ...student,
-      schoolName: schoolInfo.name,
-      session:    schoolInfo.session
-    };
-    const result = await postToGAS(payload);
-    if (result.success) {
-      student.synced = true;
-      if (result.photoUrl) student.drivePhotoUrl = result.photoUrl;
-      success++;
-    } else {
-      fail++;
-    }
+  // Local mein nahi hai — sheet data se ek temporary student banao
+  var s = {
+    id: sid, name: nm, cls: cl, roll: rl, father: ft,
+    dob: db, blood: bl, mobile: mb,
+    mother:'', section:'', gender:'', address:'',
+    school: SCHOOL.code, addedBy: user ? user.name : '',
+    synced: true, prevSynced: true,
+    driveId:'', photoUrl:'',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  // Sheet data mein se poora record dhundho
+  var full = adminData.find(function(x){ return (x.StudentID||x.id) === sid; });
+  if (full) {
+    s.mother  = full.MotherName || full.mother  || '';
+    s.section = full.Section   || full.section  || '';
+    s.gender  = full.Gender    || full.gender   || '';
+    s.address = full.Address   || full.address  || '';
+    s.photoUrl= full.PhotoURL  || full.photoUrl || '';
+    s.driveId = full.PhotoDriveId || full.driveId || '';
   }
-
-  saveStudents();
-  btn.innerHTML = '🔄 Sync to Google Sheet';
-  btn.disabled  = false;
-
-  document.getElementById('sync-result').innerHTML = `
-    <div class="alert ${fail === 0 ? 'alert-success' : 'alert-warning'}">
-      ${fail === 0
-        ? `🎉 ${success} student(s) sync ho gaye!`
-        : `✓ ${success} synced, ⚠ ${fail} fail. Internet check karein.`}
-      <br><a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit" target="_blank" style="font-weight:600;color:var(--blue);">📊 Sheet kholein →</a>
-    </div>`;
-  checkPendingSync();
+  students.push(s);
+  save();
+  startEdit(sid);
+  showTab('add');
+  toast('✏ Sheet se student edit mode mein — Add tab mein update karo', 'success');
 }
 
-function checkPendingSync() {
-  const pending = students.filter(s => !s.synced).length;
-  const bar = document.getElementById('sync-status-bar');
-  if (bar) {
-    if (pending > 0) {
-      bar.style.display = 'block';
-      bar.textContent = `⚠ ${pending} student(s) sync nahi hua. Export tab se sync karein.`;
+function adminDelete(sid, driveId, nm) {
+  if (!confirm('\"' + nm + '\" ko permanently delete karna chahte ho?\n\nSheet se bhi hat jayega!')) return;
+  // Local se hatao
+  students = students.filter(function(s){ return s.id !== sid; });
+  save();
+  renderList();
+  // Sheet se bhi hatao via GAS
+  showLoading('Delete ho raha hai...');
+  post({ action:'delete', studentId: sid, driveId: driveId }, function(data) {
+    hideLoading();
+    if (data && data.ok) {
+      adminData = adminData.filter(function(x){ return (x.StudentID||x.id) !== sid; });
+      drawAdminTable(adminData);
+      toast('✓ ' + nm + ' delete ho gaya!', 'success');
     } else {
-      bar.style.display = 'none';
+      toast('Sheet se delete nahi hua — dobara try karo', 'error');
     }
-  }
+  });
 }
 
-// ══════════════════════════════════════
-// CSV EXPORT — Blob method (works on Android/Chrome)
-// ══════════════════════════════════════
-function exportCSV() {
-  if (!students.length) { alert('Koi student nahi hai!'); return; }
-  const headers = ['ID','Name','Class','Section','Roll No','Address','Parent Name','Mobile','Photo (Drive URL)','Synced','Timestamp'];
-  const rows = students.map(s => [
-    s.id, s.name, s.cls, s.section||'', s.roll,
-    s.address||'', s.parent||'', s.mobile||'',
-    s.drivePhotoUrl||'', s.synced?'Yes':'No', s.timestamp||''
-  ]);
-  const csv = '\uFEFF' + [headers, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
-    .join('\n');
+function filterAdmin() {
+  var q = (byId('admin-search').value||'').toLowerCase();
+  drawAdminTable(!q ? adminData : adminData.filter(function(s){
+    var nm=(s.Name||s.name||'').toLowerCase();
+    var cl=(s.Class||s.cls||'').toLowerCase();
+    var rl=String(s.RollNo||s.roll||'');
+    return nm.includes(q)||cl.includes(q)||rl.includes(q);
+  }));
+}
 
-  const fileName = (schoolInfo?.name || 'School').replace(/\s+/g,'_')
-                   + '_' + (schoolInfo?.session || '2025-26') + '_Students.csv';
-  try {
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
-    showToast('✓ CSV download ho raha hai!');
-  } catch(e) {
-    // Fallback for very old browsers
-    const win = window.open('', '_blank');
-    if (win) {
-      win.document.write('<pre>' + csv.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>');
-      win.document.title = 'CSV — Copy karke Excel mein paste karein';
-    } else {
-      alert('Download block hua. Browser mein popup allow karein.');
+// ─── SYNC ─────────────────────────────────────────
+function syncPending(silent) {
+  var pending = students.filter(function(s){return !s.synced;});
+  if (!pending.length) { if (!silent) toast('Sab synced hain!','success'); return; }
+  if (!navigator.onLine) { if (!silent) toast('Internet nahi hai','warning'); return; }
+  if (!silent) showLoading('Syncing '+pending.length+' students...');
+  var done=0, fail=0, i=0;
+  function next() {
+    if (i >= pending.length) {
+      save(); hideLoading(); renderList(); showPendingAlert();
+      var msg = '✓ '+done+' synced'+(fail?' · '+fail+' failed':'');
+      toast(msg, fail?'warning':'success');
+      if (!silent) {
+        var el = byId('sync-result');
+        if (el) el.innerHTML = '<div class="alert '+(fail?'alert-warning':'alert-success')+'">'+msg+'</div>';
+      }
+      return;
     }
+    syncOne(pending[i], function(ok){ if(ok)done++;else fail++; i++; next(); });
   }
+  next();
 }
 
-// ══════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════
-function showToast(msg, color) {
-  const t = document.createElement('div');
-  t.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:${color||'#1e8449'};color:white;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);white-space:nowrap;`;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2800);
-}
+function syncOne(s, cb) {
+  var isTEMP = isTempId(s.id);
 
-
-// ══════════════════════════════════════
-// SHARE — Teacher Link Generator
-// ══════════════════════════════════════
-function openShareScreen() {
-  if (!schoolInfo) { alert('Pehle school setup karein!'); return; }
-  const token   = encodeToken(schoolInfo);
-  const baseUrl = window.location.href.split('?')[0];
-  const link    = baseUrl + '?t=' + token;
-
-  document.getElementById('share-link-text').textContent = link;
-  document.getElementById('share-screen').classList.add('open');
-}
-
-function closeShareScreen() {
-  document.getElementById('share-screen').classList.remove('open');
-}
-
-function copyShareLink() {
-  const link = document.getElementById('share-link-text').textContent;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => {
-      showToast('✓ Link copy ho gaya!');
-      closeShareScreen();
-    });
+  // Action decide karo:
+  // - TEMP ID → 'add' (GAS real ID assign karega)
+  // - preRegistered → 'updateAfterRegister' (ID already reserved, sirf data+photo bhejo)
+  // - prevSynced/driveId → 'update'
+  // - nayi entry → 'add'
+  var action;
+  if (isTEMP) {
+    action = 'add';
+  } else if (s.preRegistered) {
+    action = 'updateAfterRegister';
+  } else if (s.prevSynced || s.driveId) {
+    action = 'update';
   } else {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = link;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-    showToast('✓ Link copy ho gaya!');
-    closeShareScreen();
+    action = 'add';
   }
+
+  var rawPhoto = null;
+  if (s.photo) {
+    rawPhoto = s.photo.replace(/^data:image\/[a-z]+;base64,/, '');
+  }
+
+  var payload = {
+    action:      action,
+    studentId:   s.id,       // TEMP id ya real SD id
+    name:        s.name,
+    fatherName:  s.father,
+    motherName:  s.mother,
+    dob:         s.dob,
+    cls:         s.cls,
+    section:     s.section,
+    rollNo:      s.roll,
+    bloodGroup:  s.blood,
+    gender:      s.gender,
+    address:     s.address,
+    mobile:      s.mobile,
+    schoolCode:  s.school,
+    addedBy:     s.addedBy,
+    photoBase64: rawPhoto,
+    driveId:     s.driveId || ''
+  };
+
+  post(payload, function(data) {
+    if (data && data.ok) {
+      s.synced       = true;
+      s.prevSynced   = true;
+      s.preRegistered = false;
+      s.photo        = null;
+      if (data.photoUrl)  s.photoUrl  = data.photoUrl;
+      if (data.driveId)   s.driveId   = data.driveId;
+
+      // ── TEMP ID replace → real SD ID ──
+      if (data.studentId && isTEMP) {
+        var oldId  = s.id;
+        s.id       = data.studentId; // e.g. SD10004
+        // Array mein replace karo
+        students = students.map(function(x){ return x.id === oldId ? s : x; });
+        save();
+        renderList();
+        toast('✓ ID update: ' + oldId + ' → ' + s.id, 'success');
+      } else {
+        students = students.map(function(x){ return x.id === s.id ? s : x; });
+        save();
+      }
+    }
+    if (cb) cb(data && data.ok);
+  });
 }
 
-function shareOnWhatsApp() {
-  const link  = document.getElementById('share-link-text').textContent;
-  const msg   = encodeURIComponent(
-    '📋 *School ID Card System*\n' +
-    schoolInfo.name + ' — ' + (schoolInfo.session || '') + '\n\n' +
-    'Is link se apni class ke students ka data bharo:\n' + link
-  );
-  window.open('https://wa.me/?text=' + msg, '_blank');
+function showPendingAlert() {
+  var n = students.filter(function(s){return !s.synced;}).length;
+  var el = byId('pending-alert');
+  if (!el) return;
+  if (n > 0) { el.style.display=''; el.textContent='⚠ '+n+' student(s) sync pending hain.'; }
+  else el.style.display='none';
 }
 
-// Online hone par auto-sync
-window.addEventListener('online', () => {
-  const pending = students.filter(s => !s.synced);
-  if (pending.length) {
-    showToast('📶 Internet mila! Sync ho raha hai...');
-    pending.forEach(syncSingleStudent);
-  }
-});
+// ─── EXPORT ───────────────────────────────────────
+function fillPrintClasses() {
+  var sel = byId('print-class');
+  var cls = [...new Set(students.map(function(s){return s.cls;}).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">-- Sab Classes --</option>' +
+    cls.map(function(c){return '<option>'+c+'</option>';}).join('');
+}
+
+function exportCSV() {
+  if (!students.length) { toast('Koi student nahi!','error'); return; }
+  var H = ['ID','Name','Father','Mother','DOB','Class','Section','Roll','Blood','Gender','Address','Mobile','School','AddedBy','PhotoURL','Synced','CreatedAt','UpdatedAt'];
+  var rows = students.map(function(s){
+    return [s.id,s.name,s.father,s.mother,s.dob,s.cls,s.section,s.roll,s.blood,s.gender,s.address,s.mobile,s.school,s.addedBy,s.photoUrl,s.synced?'Yes':'No',s.createdAt,s.updatedAt]
+      .map(function(v){return '"'+String(v||'').replace(/"/g,'""')+'"';}).join(',');
+  });
+  var csv = [H.map(function(h){return '"'+h+'"';}).join(',')].concat(rows).join('\n');
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = SCHOOL.name.replace(/\s+/g,'_')+'_Students.csv';
+  a.click();
+}
+
+// ─── API ──────────────────────────────────────────
+function post(payload, cb) {
+  fetch(GAS_URL, {method:'POST', body:JSON.stringify(payload), headers:{'Content-Type':'text/plain'}})
+    .then(function(r){return r.json();})
+    .then(function(d){if(cb)cb(d);})
+    .catch(function(){if(cb)cb(null);});
+}
+
+// ─── SAVE ─────────────────────────────────────────
+function save() {
+  var toStore = students.map(function(s){
+    var c = {};
+    Object.keys(s).forEach(function(k){c[k]=s[k];});
+    if (c.synced) c.photo = null; // don't store large b64 after sync
+    return c;
+  });
+  localStorage.setItem('rps_students', JSON.stringify(toStore));
+}
+
+// ─── UTILS ────────────────────────────────────────
+window.addEventListener('online',  function(){syncPending(true);});
+window.addEventListener('offline', function(){toast('Offline — data locally save hoga','warning');});
+
+function byId(id) { return document.getElementById(id); }
+function esc(s)   { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showLoading(m) { byId('loading-msg').textContent=m||'Please wait...'; byId('loading').classList.add('on'); }
+function hideLoading()  { byId('loading').classList.remove('on'); }
+
+var _t;
+function toast(msg, type) {
+  clearTimeout(_t);
+  var el = byId('toast');
+  el.textContent = msg;
+  el.style.background = type==='error'?'#c0392b':type==='warning'?'#b7770d':type==='success'?'#1e8449':'#1a5276';
+  el.style.color = 'white';
+  el.style.display = 'block';
+  _t = setTimeout(function(){el.style.display='none';}, 3200);
+}
 </script>
 </body>
 </html>
